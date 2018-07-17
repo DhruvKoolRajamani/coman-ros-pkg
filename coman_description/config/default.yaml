@@ -1,0 +1,15 @@
+general:
+  name: "Coman"
+  namespace: "parameters"
+morphology:
+  use_hands: False
+  meshes:
+    dir_meshes: "package://coman_description/model/meshes/"
+    dir_material: "package://coman_description/model/materials/"
+    use_meshes: True
+    use_complex_collisions: True
+    use_material: True
+sensors:
+  use_feet_forces: False
+  use_ftSensors: False
+  use_cameraPlugin: False
