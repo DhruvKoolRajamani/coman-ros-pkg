@@ -47,7 +47,7 @@ def spawn_node(islandNamespace, namespace, island_id, robot_id, model_location, 
 
     nodes = [
         node_agnathax_spawn,
-        node_camera_spawn
+        node_camera_spawn,
     ]
     return nodes
 

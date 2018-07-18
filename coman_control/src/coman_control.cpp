@@ -1,6 +1,6 @@
 #include "coman_control.hpp"
 
-coman_control::coman_control( int nLinks, ros::NodeHandle* node_handle )
+coman_control::coman_control( int nLinks, ros::NodeHandlePtr node_handle )
 {
     ros::Publisher pubs_efforts;
 
@@ -17,6 +17,8 @@ coman_control::coman_control( int nLinks, ros::NodeHandle* node_handle )
         // Initializing vector of strings for joint effort controllers in the spine
         node_handle->getParam(prefix + "/joint/" + to_string(i), jointName);
         revoluteJointsList.push_back(jointName);
+
+        // cout << i << " : " << revoluteJointsList[i] << endl;
 
         string joint_control_topic_name = control_prefix + "/joint_effort_controller_" + jointName + "/command";
         jointEffortList.push_back(joint_control_topic_name);
@@ -55,19 +57,15 @@ void coman_control::jointEffortControllers( double torques[] )
     }
 }
 
-void coman_control::jointStateCallback( const sensor_msgs::JointStateConstPtr & JS )
+void coman_control::jointStateCallback( const sensor_msgs::JointState::ConstPtr & JS )
 {
-    for ( int i= 0; i< NUM; i++ )
-    {
-        qSens[i] = JS->position[i];
-        dqSens[i] = JS->velocity[i];
-    }
+    jointState = *JS;
 }
 
-void coman_control::jointStateFeedback()
+void coman_control::jointStateFeedback( ros::NodeHandlePtr n )
 {   
     string topic = prefix + "/joint_states";
-    jointStateSubscriber = nh->subscribe( topic, callbackQueueSize, &coman_control::jointStateCallback, this );
+    jointStateSubscriber = n->subscribe( topic, 31, &coman_control::jointStateCallback, this );
 }
 
 void coman_control::f3dForceCallback( const geometry_msgs::WrenchStamped & WS )
@@ -95,11 +93,11 @@ void coman_control::imuCallback( const sensor_msgs::ImuConstPtr& IMU )
     aImu = IMU->linear_acceleration;
 }
 
-void coman_control::imuFeedback()
+void coman_control::imuFeedback( ros::NodeHandlePtr n )
 {
     if( imuSubscriberSet )
     {
-        imuSubscriber = nh->subscribe( prefix + "/imu", callbackQueueSize, &coman_control::imuCallback, this );
+        imuSubscriber = n->subscribe( prefix + "/imu", callbackQueueSize, &coman_control::imuCallback, this );
     }
 }
 
@@ -137,7 +135,7 @@ void coman_control::ftSensorCallbackLFS( const geometry_msgs::WrenchStamped::Con
     forceLeftHand[2] = WS->wrench.force.z;
 }
 
-void coman_control::ftSensorFeedback( ros::NodeHandle* nSub )
+void coman_control::ftSensorFeedback( ros::NodeHandlePtr nSub )
 {
     ftSubscriberRFS = nSub->subscribe(
         ftSensorList[0].c_str(),
@@ -198,9 +196,27 @@ void coman_control::getftSensorFeedback( double _forceRightAnkle[], double _forc
     }
 }
 
-void coman_control::getStateFeedback( double _qSens[], double _dqSens[] )
+void coman_control::setStateFeedback()
 {
     for ( int i= 0; i< NUM; i++ )
+    {
+        for ( int j = 0; j < jointState.name.size(); j++ )
+        {
+            if (( revoluteJointsList[i].compare( jointState.name[j] ) ) == 0 )
+            {
+                qSens[i] = jointState.position[j];
+                dqSens[i] = jointState.velocity[j];
+            }
+        }
+        // cout << i << " : " << revoluteJointsList[i] << " : " << qSens[i] << endl;
+    }
+}
+
+void coman_control::getStateFeedback( double _qSens[], double _dqSens[] )
+{
+    coman_control::setStateFeedback();
+
+    for ( int i = 0; i < NUM; i++ )
     {
         _qSens[i] = qSens[i];
         _dqSens[i] = dqSens[i];

@@ -68,6 +68,8 @@ def setupRobots(islandNamespace, robotNamespace, island_id, robot_id):
         namespace+"parameters/control/joints",
         get_all_revolute_joints_names(robot)
     )
+    print(get_all_revolute_joints_names)
+    
     node_state = roslaunch.core.Node(
         package="robot_state_publisher",
         node_type="state_publisher",
@@ -75,6 +77,23 @@ def setupRobots(islandNamespace, robotNamespace, island_id, robot_id):
         namespace=namespace,
         machine_name=island
     )
+
+    i = 0
+    args_rqt = namespace + "joint_states/position[{}] "
+    args_rqt_plot = ""
+    for i in range(21, 24):
+        args_rqt_plot += args_rqt.format(i)
+    node_rqt_plot = roslaunch.core.Node(
+        package="rqt_plot",
+        node_type="rqt_plot",
+        name="JointStatePos_plot",
+        namespace=namespace,
+        output="screen",
+        args=(
+            args_rqt_plot
+        )
+    )
+    
     spawnNodes = spawn_node(
         islandNamespace=islandNs,
         namespace=namespace, 
@@ -83,7 +102,7 @@ def setupRobots(islandNamespace, robotNamespace, island_id, robot_id):
         model_location=[
             0, 
             robot_id - 1,
-            0
+            0.55
         ], 
         camera_location=[1.2, (robot_id), 0.2]
     )
@@ -95,7 +114,8 @@ def setupRobots(islandNamespace, robotNamespace, island_id, robot_id):
     nodes = [
         spawnRobotNode,
         # spawnCameraNode,
-        node_state
+        node_state,
+        node_rqt_plot
     ]
     return nodes
 

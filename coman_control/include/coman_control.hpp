@@ -25,35 +25,39 @@
 using namespace std;
 
 typedef const boost::function < void ( const sensor_msgs::JointState & ) > jsCallback;
-typedef const boost::function< void( const boost::shared_ptr< geometry_msgs::WrenchStamped const > & ) > ftCallback;
+
+typedef std::map< string, double > MapType;
+MapType jointPositions;
+MapType jointVelocities;
 
 class coman_control
 {
     public:
     // coman_control(ros::NodeHandle *nh);
-    coman_control( int nLinks, ros::NodeHandle* node_handle );
+    coman_control( int nLinks, ros::NodeHandlePtr node_handle );
     ~coman_control(){}
 
-    void setNodeHandle( ros::NodeHandle* node_handle ){ nh = node_handle; }
+    void setNodeHandle( ros::NodeHandlePtr node_handle ){ nh = node_handle; }
     void getftSensorFeedback( double _forceRightAnkle[], double _forceLeftAnkle[], double _forceRightHand[], double _forceLeftHand[], double _torqueLeftAnkle[], double _torqueRightAnkle[] );
     void getStateFeedback( double _qSens[], double _dqSens[] );
+    void setStateFeedback();
     
     void jointEffortControllers( double torques[] );
 
-    void jointStateFeedback();
-    void jointStateCallback( const sensor_msgs::JointStateConstPtr& msg );
+    void jointStateFeedback( ros::NodeHandlePtr n );
+    void jointStateCallback( const sensor_msgs::JointState::ConstPtr & msg );
 
     void f3dForceFeedback();
     void f3dForceCallback( const geometry_msgs::WrenchStamped& msg );
 
-    void imuFeedback();
+    void imuFeedback( ros::NodeHandlePtr n );
     void imuCallback( const sensor_msgs::ImuConstPtr& msg );
 
     void ftSensorCallbackRAS( const geometry_msgs::WrenchStamped::ConstPtr& WS );
     void ftSensorCallbackLAS( const geometry_msgs::WrenchStamped::ConstPtr& WS );
     void ftSensorCallbackRFS( const geometry_msgs::WrenchStamped::ConstPtr& WS );
     void ftSensorCallbackLFS( const geometry_msgs::WrenchStamped::ConstPtr& WS );
-    void ftSensorFeedback( ros::NodeHandle* nSub );
+    void ftSensorFeedback( ros::NodeHandlePtr nSub );
 
     geometry_msgs::Quaternion getImuQuat();
     geometry_msgs::Vector3 getImuVel(), getImuAcc();
@@ -78,13 +82,15 @@ class coman_control
     geometry_msgs::Vector3 vImu, aImu;
 
     geometry_msgs::WrenchStamped rightAnkle, leftAnkle, rightHand, leftHand;
+
+    sensor_msgs::JointState jointState;
     
     ros::Subscriber jointStateSubscriber;
     ros::Subscriber f3dSubscriber;
     ros::Subscriber imuSubscriber;
     ros::Subscriber ftSubscriberRAS, ftSubscriberLAS, ftSubscriberRFS, ftSubscriberLFS;
 
-    ros::NodeHandle* nh;
+    ros::NodeHandlePtr nh;
 
     vector< string > ftSensorTypes = { "RFS", "LFS", "RAS", "LAS" };
     vector< string > jointEffortList;

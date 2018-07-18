@@ -95,8 +95,11 @@ The coordinate frame called gaze defines the head position and orientation. The 
 and to define the end effectors of the robot
 
 The coordinate frame called base_link is rigidly attached to the robot root body. It is recommended to choose the robot waist as its root body. The base_link can be attached to the root in any arbitrary position or orientation; for every hardware platform there will be a different place on the base that provides an obvious point of reference. Note that REP 103 [1] specifies a preferred orientation for frames. -->
-  <link name="base_link"/>
+  <link name="base_link">
+    <gravity>0</gravity>
+  </link>
   <link name="Waist">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0.0 0.0 0.0" xyz="-0.026391145 -5.8216364E-4 0.052632312"/>
       <mass value="1.8008695"/>
@@ -106,13 +109,13 @@ The coordinate frame called base_link is rigidly attached to the robot root body
       <origin rpy="0 0 3.14159265359" xyz="0 0 -0.52"/>
       <material name="dark_grey"/>
       <geometry name="Waist_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Waist.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Waist.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0 0 -0.52"/>
       <geometry name="Waist_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Waist.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Waist.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
@@ -123,6 +126,7 @@ The coordinate frame called base_link is rigidly attached to the robot root body
   <!-- The coordinate frame called torso is attached to the lowest body of the model which is a parent of l_gripper, r_gripper and gaze. -->
   <link name="torso"/>
   <link name="DWL">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="4.2999707E-4 -0.0097650317 0.033011157"/>
       <mass value="0.54588774"/>
@@ -132,17 +136,18 @@ The coordinate frame called base_link is rigidly attached to the robot root body
       <origin rpy="0 0 3.14159265359" xyz="-0.020281504 0 -0.63912053"/>
       <material name="dark_grey"/>
       <geometry name="DWL_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Torso1.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Torso1.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="-0.020281504 0 -0.63912053"/>
       <geometry name="DWL_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Torso1.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Torso1.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="DWS">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="-0.0021273416 0.0033575235 -0.0010076896"/>
       <mass value="0.75398402"/>
@@ -152,17 +157,18 @@ The coordinate frame called base_link is rigidly attached to the robot root body
       <origin rpy="0 0 3.14159265359" xyz="-0.020281504 0 -0.63912053"/>
       <material name="dark_grey"/>
       <geometry name="DWS_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Torso2.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Torso2.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="-0.020281504 0 -0.63912053"/>
       <geometry name="DWS_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Torso2.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Torso2.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="DWYTorso">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="-0.0358501 1.8286043E-5 0.117557148"/>
       <mass value="6.3617175"/>
@@ -172,13 +178,13 @@ The coordinate frame called base_link is rigidly attached to the robot root body
       <origin rpy="0 0 3.14159265359" xyz="-0.020281504 0.0 -0.68662053"/>
       <material name="red"/>
       <geometry name="DWYTorso_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Torso3.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Torso3.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="-0.020281504 0.0 -0.68662053"/>
       <geometry name="DWYTorso_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Torso3.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Torso3.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
@@ -202,6 +208,7 @@ and to define the end effectors of the robot -->
   <!-- LINKS -->
   <!-- ********************RIGHT LEG******************** -->
   <link name="RHipMot">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="-3.269678E-4 -0.023587321 -2.6496509E-4"/>
       <mass value="0.89258227"/>
@@ -211,17 +218,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="0.0 0.023 -0.52"/>
       <material name="dark_grey"/>
       <geometry name="RHipMot_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Leg0.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Leg0.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0.0 0.023 -0.52"/>
       <geometry name="RHipMot_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Leg0.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Leg0.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="RThighUpLeg">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0.0012591632 -0.016896372 -0.058903336"/>
       <mass value="1.0246101"/>
@@ -231,17 +239,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="0.0 0.0726 -0.52"/>
       <material name="dark_grey"/>
       <geometry name="RThighUpLeg_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Leg1.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Leg1.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0.0 0.0726 -0.52"/>
       <geometry name="RThighUpLeg_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Leg1.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Leg1.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="RThighLowLeg">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="9.8720058E-4 6.7037262E-4 -0.075716843"/>
       <mass value="1.7001134"/>
@@ -251,17 +260,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="0.0 0.0726 -0.4176"/>
       <material name="dark_grey"/>
       <geometry name="RThighLowLeg_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Leg2.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Leg2.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0.0 0.0726 -0.4176"/>
       <geometry name="RThighLowLeg_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Leg2.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Leg2.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="RLowLeg">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0.0024612666 -0.0053099614 -0.08598948"/>
       <mass value="1.4098179"/>
@@ -271,17 +281,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="0.0 0.0726 -0.2942"/>
       <material name="dark_grey"/>
       <geometry name="RLowLeg_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Leg3.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Leg3.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0.0 0.0726 -0.2942"/>
       <geometry name="RLowLeg_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Leg3.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Leg3.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="RFootmot">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="8.8067281E-4 -9.2224881E-4 2.3038476E-4"/>
       <mass value="0.72992131"/>
@@ -291,17 +302,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="0.0 0.0726 -0.0932"/>
       <material name="dark_grey"/>
       <geometry name="RFootmot_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Leg4.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Leg4.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0.0 0.0726 -0.0932"/>
       <geometry name="RFootmot_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Leg4.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Leg4.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="RFoot">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0.00969210464 -0.0090460227 -0.043062308"/>
       <mass value="0.66646684"/>
@@ -323,6 +335,7 @@ and to define the end effectors of the robot -->
   </link>
   <!-- ********************LEFT LEG******************** -->
   <link name="LHipMot">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="-3.269678E-4 0.023587321 -2.6496509E-4"/>
       <mass value="0.89258227"/>
@@ -332,17 +345,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="0.0 -0.023 -0.52"/>
       <material name="dark_grey"/>
       <geometry name="RHipMot_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Leg0.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Leg0.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0.0 -0.023 -0.52"/>
       <geometry name="RHipMot_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Leg0.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Leg0.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="LThighUpLeg">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0.0012591632 0.016896372 -0.058903336"/>
       <mass value="1.0246101"/>
@@ -352,17 +366,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="0.0 -0.0726 -0.52"/>
       <material name="dark_grey"/>
       <geometry name="LThighUpLeg_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Leg1.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Leg1.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0.0 -0.0726 -0.52"/>
       <geometry name="LThighUpLeg_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Leg1.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Leg1.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="LThighLowLeg">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="9.8720058E-4 -6.7037262E-4 -0.075716843"/>
       <mass value="1.7001134"/>
@@ -372,17 +387,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="0.0 -0.0726 -0.4176"/>
       <material name="dark_grey"/>
       <geometry name="LThighLowLeg_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Leg2.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Leg2.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0.0 -0.0726 -0.4176"/>
       <geometry name="LThighLowLeg_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Leg2.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Leg2.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="LLowLeg">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0.0024612666 0.0053099614 -0.085989484"/>
       <mass value="1.4098179"/>
@@ -392,17 +408,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="0.0 -0.0726 -0.2942"/>
       <material name="dark_grey"/>
       <geometry name="LLowLeg_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Leg3.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Leg3.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0.0 -0.0726 -0.2942"/>
       <geometry name="LLowLeg_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Leg3.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Leg3.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="LFootmot">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="8.8067281E-4 9.2224881E-4 2.3038476E-4"/>
       <mass value="0.72992131"/>
@@ -412,17 +429,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="0.0 -0.0726 -0.0932"/>
       <material name="dark_grey"/>
       <geometry name="LFootmot_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Leg4.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Leg4.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0.0 -0.0726 -0.0932"/>
       <geometry name="LFootmot_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Leg4.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Leg4.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="LFoot">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0.0096921046 0.0090460227 -0.043062308"/>
       <mass value="0.66646684"/>
@@ -479,6 +497,7 @@ and to define the end effectors of the robot -->
   <!-- LINKS -->
   <!-- RIGHT ARM -->
   <link name="RShp">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0.0099500565 -0.038682024 1.6446924E-4"/>
       <mass value="0.56782202"/>
@@ -488,17 +507,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="-0.005305 0.0825 -0.844329"/>
       <material name="dark_grey"/>
       <geometry name="RShp_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Arm0.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Arm0.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="-0.005305 0.0825 -0.844329"/>
       <geometry name="RShp_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Arm0.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Arm0.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="RShr">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="-0.0038936743 2.2022151E-6 -0.0048616005"/>
       <mass value="0.77683752"/>
@@ -508,17 +528,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="-0.005305 0.1558 -0.844329"/>
       <material name="dark_grey"/>
       <geometry name="RShr_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Arm1.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Arm1.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="-0.005305 0.1558 -0.844329"/>
       <geometry name="RShr_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Arm1.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Arm1.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="RShy">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0.0022714213 -0.0071091517 -0.057455221"/>
       <mass value="1.0462304"/>
@@ -528,17 +549,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="-0.005305 0.1558 -0.79952053"/>
       <material name="dark_grey"/>
       <geometry name="RShy_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Arm2.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Arm2.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="-0.005305 0.1558 -0.79952053"/>
       <geometry name="RShy_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Arm2.STL" scale="0.03937 0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Arm2.STL" scale="0.03937 0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="RElb">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="-6.5553403E-4 -9.3464748E-4 -9.3101289E-4"/>
       <mass value="0.63306933"/>
@@ -548,18 +570,19 @@ and to define the end effectors of the robot -->
       <origin rpy="-1.570796326795 1.570796326795 0" xyz="0 0 0"/>
       <material name="dark_grey"/>
       <geometry name="RElb_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Elbow.STL" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://coman_description/model/meshes/Elbow.STL" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="-1.570796326795 1.570796326795 0" xyz="0 0 0"/>
       <geometry name="RElb_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Elbow.STL" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Elbow.STL" scale="1.0 1.0 1.0"/>
       </geometry>
     </collision>
   </link>
   <!-- LEFT ARM -->
   <link name="LShp">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0.0099500565 0.038682024 1.6446924E-4"/>
       <mass value="0.56782202"/>
@@ -569,17 +592,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="-0.005305 -0.0825 -0.844329"/>
       <material name="dark_grey"/>
       <geometry name="LShp_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Arm0.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Arm0.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="-0.005305 -0.0825 -0.844329"/>
       <geometry name="LShp_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Arm0.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Arm0.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="LShr">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="-0.0038936743 -2.2022151E-6 -0.0048616005"/>
       <mass value="0.77683752"/>
@@ -589,17 +613,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="-0.005305 -0.1558 -0.844329"/>
       <material name="dark_grey"/>
       <geometry name="LShr_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Arm1.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Arm1.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="-0.005305 -0.1558 -0.844329"/>
       <geometry name="LShr_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Arm1.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Arm1.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="LShy">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0.0022714213 0.0071091517 -0.057455221"/>
       <mass value="1.0462304"/>
@@ -609,17 +634,18 @@ and to define the end effectors of the robot -->
       <origin rpy="0 0 3.14159265359" xyz="-0.005305 -0.1558 -0.79952053"/>
       <material name="dark_grey"/>
       <geometry name="LShy_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Arm2.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/Arm2.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="-0.005305 -0.1558 -0.79952053"/>
       <geometry name="LShy_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Arm2.STL" scale="0.03937 -0.03937 0.03937"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Arm2.STL" scale="0.03937 -0.03937 0.03937"/>
       </geometry>
     </collision>
   </link>
   <link name="LElb">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="-6.5553403E-4 9.3464748E-4 -9.3101289E-4"/>
       <mass value="0.63306933"/>
@@ -629,13 +655,13 @@ and to define the end effectors of the robot -->
       <origin rpy="-1.570796326795 1.570796326795 0" xyz="0 0 0"/>
       <material name="dark_grey"/>
       <geometry name="LElb_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Elbow.STL" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://coman_description/model/meshes/Elbow.STL" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="-1.570796326795 1.570796326795 0" xyz="0 0 0"/>
       <geometry name="LElb_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Elbow.STL" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Elbow.STL" scale="1.0 1.0 1.0"/>
       </geometry>
     </collision>
   </link>
@@ -660,6 +686,7 @@ and to define the end effectors of the robot -->
   <!-- ## WRONG NUMBERS FOR INERTIAL!!! FIX THEM!! ## -->
   <!-- In ROBOTRAN this link is named LFARM -->
   <link name="LForearm">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 -0.0282"/>
       <mass value="0.93351655"/>
@@ -669,19 +696,20 @@ and to define the end effectors of the robot -->
       <origin rpy="3.14159265359 0 1.570796326795" xyz="0 0 0.0718"/>
       <material name="dark_grey"/>
       <geometry name="LForearm_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Forearm0.STL" scale="0.1 0.1 0.1"/>
+        <mesh filename="package://coman_description/model/meshes/Forearm0.STL" scale="0.1 0.1 0.1"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 3.14159265359 1.570796326795" xyz="0 0 0.0718"/>
       <geometry name="LForearm_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Forearm0.STL" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Forearm0.STL" scale="1.0 1.0 1.0"/>
       </geometry>
     </collision>
   </link>
   <!-- ## WRONG NUMBERS FOR INERTIAL!!! FIX THEM!! ## -->
   <!-- Here I have used the inertia of a full cylinder with r = 0.02 [m] and h = 0.07 [m] -->
   <link name="LWrMot2">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.26070556"/>
@@ -691,19 +719,20 @@ and to define the end effectors of the robot -->
       <origin rpy="0 1.570796326795 3.14159265359" xyz="0.025 0 0"/>
       <material name="grey"/>
       <geometry name="LWrMot2_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Forearm1.STL" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://coman_description/model/meshes/Forearm1.STL" scale="0.001 0.001 0.001"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 1.570796326795 3.14159265359" xyz="0.025 0 0"/>
       <geometry name="LWrMot2_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Forearm1.STL" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Forearm1.STL" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
   <!-- ## WRONG NUMBERS FOR INERTIAL!!! FIX THEM!! ## -->
   <!-- Here I have used the inertia of a concave cylinder with r = 0.02 [m] -->
   <link name="LWrMot3">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.054007518"/>
@@ -713,13 +742,13 @@ and to define the end effectors of the robot -->
       <origin rpy="0 3.14159265359 1.570796326795" xyz="0.025 -0.012 -0.02"/>
       <material name="grey"/>
       <geometry name="LWrMot3_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Forearm2.STL" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://coman_description/model/meshes/Forearm2.STL" scale="0.001 0.001 0.001"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 3.14159265359 1.570796326795" xyz="0.025 -0.012 -0.02"/>
       <geometry name="LWrMot3_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Forearm2.STL" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Forearm2.STL" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
@@ -727,6 +756,7 @@ and to define the end effectors of the robot -->
   <!-- ## WRONG NUMBERS FOR INERTIAL!!! FIX THEM!! ## -->
   <!-- In ROBOTRAN this link is named RFArm -->
   <link name="RForearm">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 -0.0282"/>
       <mass value="0.93351655"/>
@@ -736,19 +766,20 @@ and to define the end effectors of the robot -->
       <origin rpy="3.14159265359 0 1.570796326795" xyz="0 0 0.0718"/>
       <material name="dark_grey"/>
       <geometry name="RForearm_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Forearm0.STL" scale="0.1 0.1 0.1"/>
+        <mesh filename="package://coman_description/model/meshes/Forearm0.STL" scale="0.1 0.1 0.1"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 3.14159265359 1.570796326795" xyz="0 0 0.0718"/>
       <geometry name="RForearm_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Forearm0.STL" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Forearm0.STL" scale="1.0 1.0 1.0"/>
       </geometry>
     </collision>
   </link>
   <!-- ## WRONG NUMBERS FOR INERTIAL!!! FIX THEM!! ## -->
   <!-- Here I have used the inertia of a full cylinder with r = 0.02 [m] and h = 0.07 [m] -->
   <link name="RWrMot2">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.26070556"/>
@@ -758,19 +789,20 @@ and to define the end effectors of the robot -->
       <origin rpy="0 1.570796326795 3.14159265359" xyz="0.025 0 0"/>
       <material name="grey"/>
       <geometry name="RWrMot2_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Forearm1.STL" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://coman_description/model/meshes/Forearm1.STL" scale="0.001 0.001 0.001"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 1.570796326795 3.14159265359" xyz="0.025 0 0"/>
       <geometry name="RWrMot2_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Forearm1.STL" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Forearm1.STL" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
   <!-- ## WRONG NUMBERS FOR INERTIAL!!! FIX THEM!! ## -->
   <!-- Here I have used the inertia of a concave cylinder with r = 0.02 [m] -->
   <link name="RWrMot3">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.054007518"/>
@@ -780,13 +812,13 @@ and to define the end effectors of the robot -->
       <origin rpy="0 3.14159265359 1.570796326795" xyz="0.025 -0.012 -0.02"/>
       <material name="grey"/>
       <geometry name="RWrMot3_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/Forearm2.STL" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://coman_description/model/meshes/Forearm2.STL" scale="0.001 0.001 0.001"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 3.14159265359 1.570796326795" xyz="0.025 -0.012 -0.02"/>
       <geometry name="RWrMot3_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/Forearm2.STL" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://coman_description/model/meshes/simple/Forearm2.STL" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
@@ -798,6 +830,7 @@ and to define the end effectors of the robot -->
   <!-- ************ HANDS ************ -->
   <!-- LINKS -->
   <link name="RSoftHand">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.3"/>
@@ -807,17 +840,18 @@ and to define the end effectors of the robot -->
       <origin rpy="-1.5707963268 0 3.14159265359" xyz="0.007 0.01 -0.04"/>
       <material name="dark_grey"/>
       <geometry name="RSoftHand_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/SoftHandOpen.STL" scale="0.1 0.1 0.1"/>
+        <mesh filename="package://coman_description/model/meshes/SoftHandOpen.STL" scale="0.1 0.1 0.1"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0 0.01 -0.04"/>
       <geometry name="RSoftHand_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/SoftHandOpen.STL" scale="1E-3 1E-3 1E-3"/>
+        <mesh filename="package://coman_description/model/meshes/simple/SoftHandOpen.STL" scale="1E-3 1E-3 1E-3"/>
       </geometry>
     </collision>
   </link>
   <link name="LSoftHand">
+    <gravity>0</gravity>
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.3"/>
@@ -827,13 +861,13 @@ and to define the end effectors of the robot -->
       <origin rpy="-1.5707963268 0 0" xyz="0.007 -0.01 -0.04"/>
       <material name="dark_grey"/>
       <geometry name="LSoftHand_visual">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/SoftHandOpen.STL" scale="-0.1 0.1 0.1"/>
+        <mesh filename="package://coman_description/model/meshes/SoftHandOpen.STL" scale="-0.1 0.1 0.1"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0.007 -0.01 -0.04"/>
       <geometry name="LSoftHand_collision">
-        <mesh filename="/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/meshes/simple/SoftHandOpen.STL" scale="-1E-3 1E-3 1E-3"/>
+        <mesh filename="package://coman_description/model/meshes/simple/SoftHandOpen.STL" scale="-1E-3 1E-3 1E-3"/>
       </geometry>
     </collision>
   </link>
@@ -939,7 +973,7 @@ and to define the end effectors of the robot -->
   <joint name="base_joint" type="fixed">
     <parent link="base_link"/>
     <child link="Waist"/>
-    <origin rpy="0 0 0" xyz="0 0 0.55"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
   <joint name="torso_joint" type="fixed">
     <parent link="DWYTorso"/>
@@ -971,8 +1005,6 @@ and to define the end effectors of the robot -->
     <!-- dynamics friction="0" damping="0.3"/ -->
     <dynamics damping="3.0" friction="0"/>
   </joint>
-  <!-- End Waist -->
-  <!-- Right Leg -->
   <joint name="RHipSag" type="revolute">
     <parent link="Waist"/>
     <child link="RHipMot"/>
@@ -981,6 +1013,16 @@ and to define the end effectors of the robot -->
     <limit effort="50" lower="-1.9199" upper="0.7854" velocity="4.0"/>
     <dynamics damping="3.0" friction="0"/>
   </joint>
+  <joint name="LHipSag" type="revolute">
+    <parent link="Waist"/>
+    <child link="LHipMot"/>
+    <origin rpy="0 0 0" xyz="0.0 0.023 0.0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="50" lower="-1.9199" upper="0.7854" velocity="4.0"/>
+    <dynamics damping="3.0" friction="0"/>
+  </joint>
+  <!-- End Waist -->
+  <!-- Right Leg -->
   <joint name="RHipLat" type="revolute">
     <parent link="RHipMot"/>
     <child link="RThighUpLeg"/>
@@ -1063,14 +1105,6 @@ and to define the end effectors of the robot -->
   </joint>
   <!-- End Right Leg -->
   <!-- Left Leg -->
-  <joint name="LHipSag" type="revolute">
-    <parent link="Waist"/>
-    <child link="LHipMot"/>
-    <origin rpy="0 0 0" xyz="0.0 0.023 0.0"/>
-    <axis xyz="0 1 0"/>
-    <limit effort="50" lower="-1.9199" upper="0.7854" velocity="4.0"/>
-    <dynamics damping="3.0" friction="0"/>
-  </joint>
   <joint name="LHipLat" type="revolute">
     <parent link="LHipMot"/>
     <child link="LThighUpLeg"/>
@@ -1869,7 +1903,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -1880,7 +1914,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -1891,7 +1925,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -1902,7 +1936,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/blue</name>
         </script>
       </material>
@@ -1913,7 +1947,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -1924,7 +1958,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -1935,7 +1969,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -1946,7 +1980,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -1957,7 +1991,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -1968,7 +2002,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -1979,7 +2013,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -1990,7 +2024,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2001,7 +2035,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2012,7 +2046,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2023,7 +2057,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2034,7 +2068,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2045,7 +2079,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2056,7 +2090,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2067,7 +2101,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2078,7 +2112,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2089,7 +2123,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2100,7 +2134,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2111,7 +2145,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2122,7 +2156,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2133,7 +2167,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2144,7 +2178,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2155,7 +2189,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2166,7 +2200,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2177,7 +2211,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2188,7 +2222,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2199,7 +2233,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>
@@ -2210,7 +2244,7 @@ and to define the end effectors of the robot -->
     <visual>
       <material>
         <script>
-          <uri>/home/dhruv/Coman_ws/src/coman-ros-pkg/coman_description/model/materials/scripts/iit-coman.material</uri>
+          <uri>package://coman_description/model/materials/scripts/iit-coman.material</uri>
           <name>coman/darkgrey</name>
         </script>
       </material>

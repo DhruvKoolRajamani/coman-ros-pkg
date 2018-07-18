@@ -17,7 +17,16 @@ static double begin_time = -1;
 static double _tm = 0;
 static double Q0[NUM];
 static double qknee0 = 0.2, qP0 = -0.1, qR0 = 0.055*1;
-static double qInit[] = {0,0.075,0,qP0,qP0,-qR0,0, qknee0,qP0*1.4,qR0,qR0*1,0,qknee0,qP0*1.4,-qR0*1, 0.45, -0.2 , 0.0, -1.75, 0.45, 0.2, 0.0, -1.75, RIGHT_ELBOW_YAW,0.0,0.0,LEFT_ELBOW_YAW,0,0,0,0};
+static double qInit[] = {
+    0, 0.075, 0, qP0, qP0, -qR0, 0,
+    qknee0, qP0*1.4, qR0, qR0*1, 0,
+    qknee0, qP0*1.4, -qR0*1, 0.45,
+    -0.2, 0.0, -1.75, 0.45, 0.2, 0.0,
+    -1.75, RIGHT_ELBOW_YAW, 0.0, 0.0,
+    LEFT_ELBOW_YAW, 0, 0, 0, 0
+    };
+
+// static double qInit[NUM];
 
 double vals[NUM], qSens[NUM], dqSens[NUM], tauSens[NUM], qSensAbs[NUM], tauDes[NUM];
 double Trans[3][3];
@@ -27,14 +36,24 @@ double h[NUM], dh[NUM], hD[NUM], dhD[NUM];
 
 vector< double > vTime;
 
+void init ( double torques[] )
+{
+    for ( int i= 0; i< NUM; i++ )
+    {        
+        torques[i] = 0.0;
+        // qInit[i] = 0.0;
+    }
+}
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "coman_control");
+    ros::init(argc, argv, "coman_feedback");
 
-    ros::NodeHandle* nhMain = new ros::NodeHandle("/coman_control");
-    ros::NodeHandle* nhSub1 = new ros::NodeHandle();
+    ros::NodeHandlePtr nhMain = ros::NodeHandlePtr(new ros::NodeHandle("/coman_control"));
+    ros::NodeHandlePtr nhSub1 = ros::NodeHandlePtr(new ros::NodeHandle("~"));
 
-    ros::Rate loop_rate = 100;
+    ros::Rate loop_rate = 1000;
 
     if( nhMain->getParam( "/island_1/robot_1/n_joints", n ) )
     {
@@ -46,14 +65,19 @@ int main(int argc, char **argv)
 
         // cout << dt << " : ";
         // subcriber to joint states
-        controller.jointStateFeedback();
+        controller.jointStateFeedback( nhSub1 );
         //subsriber to get imu values
-        controller.imuFeedback();
+        controller.imuFeedback( nhSub1 );
         // subscriber to ft sensor
         controller.ftSensorFeedback( nhSub1 );
 
         while (nhMain->ok())
         {
+            if ( begin_time == -1 )
+            {
+                sleep(0.01);
+            }
+
             _tm = controller.getSimulationTime();
 
             Q_imu = controller.getImuQuat();
@@ -84,12 +108,24 @@ int main(int argc, char **argv)
 
             controller.getStateFeedback( qSens, dqSens );
 
-            // if( dt != 0 )
-                // dt = _tm - vTime.back();
-            // else
-                // dt += _tm;
+            // double temp;
+            // for ( int i= 0; i< NUM; i++ )
+            // {
+            //     if ( qSens[i] < 0.001 )
+            //     {
+            //         temp = 0;
+            //     }
+            //     else
+            //         temp = qSens[i];
+            //     cout << i << " : " << temp << endl;
+            // }
 
-            // vTime.push_back( _tm );
+            if( dt != 0 )
+                dt = _tm - vTime.back();
+            else
+                dt += _tm;
+
+            vTime.push_back( _tm );
 
             if ( begin_time == -1 )
             {
@@ -98,17 +134,12 @@ int main(int argc, char **argv)
                 {
                     Q0[i] = qSens[i];
                 }
+                init( tauDes );
             }
-            else
-                _tm -= begin_time;
 
-            if ( _tm < TIME2WALK && _tm > 0 )
+            if ( _tm < TIME2WALK )
             {
                 init_pos( _tm, Q0, qInit, qSens, dqSens, tauDes, whichComan_ );
-                
-                // for (int i=0; i<NUM; i++)
-                    // cout << _tm << " : " << tauDes[i] << endl;
-                    // tauDes[i] = 500.0;
             }
 
             // cout << dt << endl;
