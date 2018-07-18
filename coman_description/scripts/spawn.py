@@ -5,12 +5,12 @@ import time
 import roslaunch
 
 
-def spawn_node(islandNamespace, namespace, island_id, robot_id, model_location, model_rotation , camera_location):
+def spawn_node(islandNamespace, namespace, island_id, robot_id, model_location, camera_location):
     """ Launch simulation with Gazebo """
     
     # print(model_location)
 
-    arg_model = "-param robot_description -urdf -model coman_{}_{} -x {} -y {} -z {} -r {} -p {} -y {}".format(island_id, robot_id, model_location[0], model_location[1], model_location[2], model_rotation[0], model_rotation[1], model_rotation[2])
+    arg_model = "-param robot_description -urdf -model coman_{}_{} -x {} -y {} -z {}".format(island_id, robot_id, model_location[0], model_location[1], model_location[2])
     # print(arg_model + ": ARG MODEL")
     
     arg_camera = "-urdf -param camera -model camera_{}_{} -x {} -y {} -z {} ".format(island_id, robot_id, (camera_location[0]), (camera_location[1] - 1), (camera_location[2]))

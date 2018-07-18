@@ -3,6 +3,7 @@ project(coman_control)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -14,7 +15,15 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
+
+find_package(Eigen3 REQUIRED)
+
+INCLUDE_DIRECTORIES(include ${EIGEN3_INCLUDE_DIR})
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+  /usr/include/eigen3/Eigen
+)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -103,10 +112,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES coman_control
-#  CATKIN_DEPENDS gazebo_ros roscpp rospy
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES coman_control
+  CATKIN_DEPENDS gazebo_ros roscpp rospy
+  # DEPENDS system_lib
 )
 
 ###########
@@ -116,14 +125,23 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
+  include/walking_control
+  include/walking_control/includeall
+  include/walking_control/includeall/state_estimation_include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/coman_control.cpp
-# )
+add_library(${PROJECT_NAME}
+  src/walking.cpp
+)
+add_library(${PROJECT_NAME}_init
+  src/walking_control/init_pos.cpp
+)
+add_library(${PROJECT_NAME}_control
+  src/coman_control.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -133,7 +151,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/coman_control_node.cpp)
+add_executable(${PROJECT_NAME}_walking src/walking.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -146,9 +164,12 @@ include_directories(
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(
+  ${PROJECT_NAME}_walking
+  ${PROJECT_NAME}_init
+  ${PROJECT_NAME}_control
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

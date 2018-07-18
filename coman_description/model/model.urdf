@@ -1580,12 +1580,47 @@ and to define the end effectors of the robot -->
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-  
-  
+  <transmission name="r_handj_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="r_handj">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="r_handj_actu">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="l_handj_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="l_handj">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="l_handj_actu">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>  
 
   <!-- End of Transmission -->
+  <gazebo reference="imu_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>1000</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>imu</topicName>
+        <bodyName>imu_link</bodyName>
+        <updateRateHZ>1000.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>imu_link</frameName>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
 
-  <gazebo>
+  <!-- <gazebo reference="imu_link">
     <plugin filename="libhector_gazebo_ros_imu.so" name="imu_sim">
       <alwaysOn>true</alwaysOn>
       <topicName>imu/data</topicName>
@@ -1606,7 +1641,7 @@ and to define the end effectors of the robot -->
       <headingDriftFrequency>0.0 0.0 0.0</headingDriftFrequency>
       <headingGaussianNoise>0.05 0.05 0.05</headingGaussianNoise>
     </plugin>
-  </gazebo>
+  </gazebo> -->
   <!-- contact model for foot surface -->
   <gazebo reference="LFoot">
     <kp>1000000.0</kp>
