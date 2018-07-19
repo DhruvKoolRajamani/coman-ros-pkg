@@ -201,14 +201,19 @@ void coman_control::ftSensorFeedback( ros::NodeHandlePtr nSub )
 }
 
 void coman_control::getImuFeedback(
-                        geometry_msgs::Quaternion _qImu,
-                        geometry_msgs::Vector3 _vImu,
-                        geometry_msgs::Vector3 _aImu
+                        geometry_msgs::Quaternion *_qImu,
+                        geometry_msgs::Vector3 *_vImu,
+                        geometry_msgs::Vector3 *_aImu
                         )
 {
-    _qImu = qImu;
-    _vImu = vImu;
-    _aImu = aImu;
+    *_qImu = qImu;
+    *_vImu = vImu;
+    *_aImu = aImu;
+
+    // cout << _tm << " : Magnitude should be 1 = " 
+    //          << (qImu.x*qImu.x) + (qImu.y*qImu.y) + 
+    //          (qImu.z*qImu.z) + (qImu.w*qImu.w) << " : " 
+    //          << vImu.x << endl;
 }
 
 void coman_control::getftSensorFeedback( 
@@ -259,5 +264,6 @@ void coman_control::getStateFeedback( double _qSens[], double _dqSens[] )
 
 double coman_control::getSimulationTime()
 {
-    return ros::Time::now().toSec();
+    _tm = ros::Time::now().toSec();
+    return _tm;
 }

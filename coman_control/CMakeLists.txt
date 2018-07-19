@@ -139,8 +139,20 @@ add_library(${PROJECT_NAME}
 add_library(${PROJECT_NAME}_init
   src/walking_control/init_pos.cpp
 )
-add_library(${PROJECT_NAME}_control
+add_library(${PROJECT_NAME}_coman
   src/coman_control.cpp
+)
+add_library(${PROJECT_NAME}_Control
+  src/walking_control/Control.cc
+)
+
+file(GLOB SOURCES
+    "include/walking_control/includeall/*.cc"
+    "include/walking_control/includeall/*.cpp"
+)
+
+add_library(${PROJECT_NAME}_depends
+  ${SOURCES}
 )
 
 ## Add cmake target dependencies of the library
@@ -157,7 +169,9 @@ add_executable(${PROJECT_NAME}_walking src/walking.cpp)
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
-# set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
+set_target_properties(
+  ${PROJECT_NAME}_walking PROPERTIES OUTPUT_NAME node PREFIX "walking"
+  )
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -167,7 +181,9 @@ add_executable(${PROJECT_NAME}_walking src/walking.cpp)
 target_link_libraries(
   ${PROJECT_NAME}_walking
   ${PROJECT_NAME}_init
-  ${PROJECT_NAME}_control
+  ${PROJECT_NAME}_coman
+  ${PROJECT_NAME}_Control
+  ${SOURCES}
   ${catkin_LIBRARIES}
 )
 

@@ -1,5 +1,3 @@
-// Eigen headers
-#include </usr/include/eigen3/Eigen/Dense>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -8,9 +6,13 @@
 #include <ctime>
 
 #include </usr/include/eigen3/Eigen/Dense>
+
 using namespace Eigen;
 //! The class of Cmatrix abreviated from Eigen
-typedef Eigen::Matrix< double , Eigen::Dynamic , Eigen::Dynamic , Eigen::RowMajor > Cmatrix;
+typedef Eigen::Matrix< double , 
+                        Eigen::Dynamic , 
+                        Eigen::Dynamic , 
+                        Eigen::RowMajor > Cmatrix;
 
 #include "AvgFilter.hh"
 #include "init_pos.hh"
@@ -40,10 +42,13 @@ class Control
 {
 
 public:
-    void LowerBody(double tm, double *Q0, double *qSens,  double *qSensAbs,  double *dqSens, double *tauSens, double *forceRightAnkle,\
-                   double *forceLeftAnkle,  double *torqueRightAnkle,  double *torqueLeftAnkle,  double *forceRightHand,\
-                   double *forceLeftHand,  double trans[][3],  double *imuAngRates,  double *imuAccelerations,\
-                   double *h,  double *dh,  double *hD,  double *dhD,  double *tauDes,  double *vals);
+    void LowerBody( double tm, double *Q0, double *qSens,  double *qSensAbs,
+                    double *dqSens, double *tauSens, double *forceRightAnkle,
+                    double *forceLeftAnkle,  double *torqueRightAnkle,  
+                    double *torqueLeftAnkle,  double *forceRightHand, 
+                    double *forceLeftHand,  double trans[][3],  double *imuAngRates, 
+                    double *imuAccelerations, double *h,  double *dh,  double *hD,  
+                    double *dhD,  double *tauDes,  double *vals, double DTm );
     //Eigen::ArrayXXf outputtest;
 
     struct state_vars {
@@ -128,7 +133,7 @@ public:
     void SaveVars(std::ofstream &outputFile);
 
     const double EPSILON = 0.000001;
-    unsigned int whichComan_ = 0;
+    unsigned int whichComan_ = 1;
 
 };
 

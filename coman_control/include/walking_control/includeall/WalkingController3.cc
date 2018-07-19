@@ -410,24 +410,12 @@ void WalkingController3::EvalTorques(double s, double tInStep, double f_d, doubl
     double Kp[N], Kd[N], I[N];
     
     #ifndef REAL_ROBOT
-    Kp[23] = 5;
-    Kd[23] = 0;
-    Kp[24] = 5;
-    Kd[24] = 0;
-    Kp[25] = 5;
-    Kd[25] = 0;
-    Kp[26] = 0;
-    Kd[26] = 0;
-    Kp[27] = 5;
-    Kd[27] = 0;
-    Kp[28] = 5;
-    Kd[28] = 0;
-    Kp[29] = 0;
-    Kd[29] = 0;
-    Kp[30] = 0;
-    Kd[30] = 0;
-    Kp[31] = 0;
-    Kd[31] = 0;
+    
+    for ( int i = 23; i < N; i++ )
+    {
+        Kp[i] = 2;
+        Kd[i] = 0.1;
+    }
 
     for (int i = 0; i < 23; i++){
         Kp[i] = 300;
