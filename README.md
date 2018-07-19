@@ -5,22 +5,25 @@
 In order to run this package, add it to your catkin workspace. You can use
 the following commands:
 
-If you dont have a catkin workspace initialized:
-`mkdir -p ~/catkin_ws/src`
-`cd catkin_ws/src/`
+If you dont have a catkin workspace initialized: `mkdir -p ~/catkin_ws/src`
+Then: `cd catkin_ws/src/`
 Clone this repository
-`cd ~/catkin_ws/`
-`catking_make`
+Next: `cd ~/catkin_ws/`
+Finally: `catkin_make`
 
-Now source your workspace from the catkin base directory and continue:
-`source devel/setup.bash`
+Now source your workspace from the catkin base directory and continue: `source devel/setup.bash`
 Start roscore: `roscore`
 
-Ctrl+Alt+T
+`Ctrl+Alt+T`
+
 Gazebo simulaton: `rosrun coman_description pysim.py`
-Ctrl+Alt+T
+
+`Ctrl+Alt+T`
+
 Load controllers: `rosrun coman_control controllers.py`
-Ctrl+Alt+T
+
+`Ctrl+Alt+T`
+
 Run controller: `rosrun coman_control coman_control_walking`
 
 ## Acknowledgement
