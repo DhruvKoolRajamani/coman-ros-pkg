@@ -135,15 +135,15 @@ int main(int argc, char **argv)
             
             for (int i = 0; i < 23; i++)
             {
-                Kp[i] = 0;
-                Kd[i] = 0;
+                Kp[i] = 10;
+                Kd[i] = 0.1;
             }
 
             // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15:Kp = 3:Kd = 0,
             //  
             const int JOINT_NUM = 15;
-            Kp[JOINT_NUM] = 0;
-            Kd[JOINT_NUM] = 0;
+            Kp[JOINT_NUM] = 10;
+            Kd[JOINT_NUM] = 0.1;
 
             for ( int i = 0; i < NUM; i++ )
             {
@@ -157,7 +157,7 @@ int main(int argc, char **argv)
                     // dy[i] = dqSens[i] + ALPHA*0.45*exp(-ALPHA * _tm);
 
                     y[i] = qSens[i] - qInit[i];
-                    y[i] = qSens[i] - qInit[i];                    
+                    dy[i] = (Q0_temp[i] - qInit[i]) * exp( -ALPHA * _tm );                    
                 }
                 else if ( i == 24 )
                 {
@@ -169,7 +169,7 @@ int main(int argc, char **argv)
                     // dy[i] = dqSens[i] + ALPHA*0.45*exp(-ALPHA * _tm);
 
                     y[i] = qSens[i] - qInit[i];
-                    y[i] = qSens[i] - qInit[i];                    
+                    dy[i] = (Q0_temp[i] - qInit[i]) * exp( -ALPHA * _tm );                  
                 }
                 else
                 {
@@ -192,10 +192,10 @@ int main(int argc, char **argv)
             {
                 double temp;
                 temp = -Kp[i]*(y[i]) - Kd[i]*(dy[i]);
-                if( temp < 100000000 )
+                if( temp < 100000000 && temp > -100000000 )
                     tauDes[i] = temp;
                 else
-                    cout << i << "******************************\n";
+                    cout << i << "\n******************************\n";
             }
         }
 
