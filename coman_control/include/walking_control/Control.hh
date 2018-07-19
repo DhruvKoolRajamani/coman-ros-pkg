@@ -48,7 +48,7 @@ public:
                     double *torqueLeftAnkle,  double *forceRightHand, 
                     double *forceLeftHand,  double trans[][3],  double *imuAngRates, 
                     double *imuAccelerations, double *h,  double *dh,  double *hD,  
-                    double *dhD,  double *tauDes,  double *vals, double DTm );
+                    double *dhD,  double *tauDes,  double *vals, double DTm, double *euler );
     //Eigen::ArrayXXf outputtest;
 
     struct state_vars {

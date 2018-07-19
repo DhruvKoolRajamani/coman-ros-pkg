@@ -1,6 +1,7 @@
 #include "coman_control.hpp"
 #include "walking_control/init_pos.hh"
 #include "walking_control/Control.hh"
+#include "R2Euler.hh"
 
 #include <boost/bind.hpp>
 
@@ -37,6 +38,7 @@ double                          forceRightAnkle[3], torqueRightAnkle[3],
                                 forceLeftAnkle[3], torqueLeftAnkle[3], 
                                 forceRightHand[3], forceLeftHand[3];
 double                          h[NUM], dh[NUM], hD[NUM], dhD[NUM];
+double                          thr, thy, thp, euler[3], testOrientation[3];
 
 vector< double >                vTime;
 
@@ -52,6 +54,62 @@ void init ( double torques[] )
     {        
         torques[i] = 0.0;
     }
+}
+
+static void toEulerAngle(const geometry_msgs::Quaternion q, double *roll, double *pitch, double *yaw, double Trans[][3] )
+{
+	// roll (x-axis rotation)
+	double sinr = +2.0 * (q.w * q.x + q.y * q.z);
+	double cosr = +1.0 - 2.0 * (q.x * q.x + q.y * q.y);
+	*roll = atan2(sinr, cosr);
+
+	// pitch (y-axis rotation)
+	double sinp = +2.0 * (q.w * q.y - q.z * q.x);
+	if (fabs(sinp) >= 1)
+		*pitch = copysign(M_PI / 2, sinp); // use 90 degrees if out of range
+	else
+		*pitch = asin(sinp);
+
+	// yaw (z-axis rotation)
+	double siny = +2.0 * (q.w * q.z + q.x * q.y);
+	double cosy = +1.0 - 2.0 * (q.y * q.y + q.z * q.z);  
+	*yaw = atan2(siny, cosy);
+
+    Trans[0][0] = 2*((q.x*q.x) + (q.w*q.w)) - 1;
+    Trans[0][1] = 2*((q.x*q.y) - (q.w*q.z));
+    Trans[0][2] = 2*((q.x*q.z) + (q.w*q.y));
+    Trans[1][0] = 2*((q.x*q.y) + (q.w*q.z));
+    Trans[1][1] = 2*((q.w*q.w) + (q.y*q.y)) - 1;
+    Trans[1][2] = 2*((q.y*q.z) - (q.w*q.x));
+    Trans[2][0] = 2*((q.x*q.z) - (q.w*q.y));
+    Trans[2][1] = 2*((q.y*q.z) + (q.w*q.x));
+    Trans[2][2] = 2*((q.w*q.w) + (q.z*q.z)) - 1;
+}
+
+void toTrans(double E_imu[3], double Trans[3][3])
+{
+    double thp, thr, thy;
+
+    thr = E_imu[0];
+    thp = E_imu[1];
+    thy = E_imu[2];
+
+    double c1 = cos(-thr); // 1
+    double c2 = cos(-thp); // 2
+    double c3 = cos(-thy); // 3
+    double s1 = sin(-thr);
+    double s2 = sin(-thp);            
+    double s3 = sin(-thy);
+
+    Trans[0][0] = c2*c3;
+    Trans[0][1] = c1*s3 + c3*s1*s2;
+    Trans[0][2] = s1*s3 - c1*c3*s2;
+    Trans[1][0] = -c2*s3;
+    Trans[1][1] = c1*c3 - s1*s2*s3;
+    Trans[1][2] = c3*s1 + c1*s2*s3;
+    Trans[2][0] = s2;
+    Trans[2][1] = -c2*s1;
+    Trans[2][2] = c1*c2;
 }
 
 int main(int argc, char **argv)
@@ -132,15 +190,17 @@ int main(int argc, char **argv)
         //      (Q_imu.z*Q_imu.z) + (Q_imu.w*Q_imu.w) << " : Vel : " 
         //      << V_imu.x << endl;
 
-        Trans[0][0] = 2*((Q_imu.x*Q_imu.x) + (Q_imu.w*Q_imu.w)) - 1;
-        Trans[0][1] = 2*((Q_imu.x*Q_imu.y) - (Q_imu.w*Q_imu.z));
-        Trans[0][2] = 2*((Q_imu.x*Q_imu.z) + (Q_imu.w*Q_imu.y));
-        Trans[1][0] = 2*((Q_imu.x*Q_imu.y) + (Q_imu.w*Q_imu.z));
-        Trans[1][1] = 2*((Q_imu.w*Q_imu.w) + (Q_imu.y*Q_imu.y)) - 1;
-        Trans[1][2] = 2*((Q_imu.y*Q_imu.z) - (Q_imu.w*Q_imu.x));
-        Trans[2][0] = 2*((Q_imu.x*Q_imu.z) - (Q_imu.w*Q_imu.y));
-        Trans[2][1] = 2*((Q_imu.y*Q_imu.z) + (Q_imu.w*Q_imu.x));
-        Trans[2][2] = 2*((Q_imu.w*Q_imu.w) + (Q_imu.z*Q_imu.z)) - 1;
+        toEulerAngle( Q_imu, &thr, &thp, &thy, Trans );
+
+        euler[0] = thr;
+        euler[1] = thp;
+        euler[2] = thy;
+
+        // R2Euler(Trans, testOrientation);
+
+        // toTrans( euler, Trans );
+
+        // cout << "thpQ : " << thp << " : thrQ : " << thr << " : thp : " << testOrientation[1] << " : thr : " << testOrientation[0] << endl;  
 
         ImuAngRates[0] = V_imu.x;
         ImuAngRates[1] = V_imu.y;
@@ -162,7 +222,7 @@ int main(int argc, char **argv)
                         forceRightAnkle, forceLeftAnkle, torqueRightAnkle, 
                         torqueLeftAnkle, forceRightHand, forceLeftHand, 
                         Trans, ImuAngRates, ImuAccelerations, h, dh, 
-                        hD, dhD, tauDes, vals, dt
+                        hD, dhD, tauDes, vals, dt, euler
                         );
         }
 

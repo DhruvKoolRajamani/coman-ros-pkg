@@ -127,7 +127,7 @@ static double p_pelvis_right[3];
 static double velocity_straight[3];
 
 
-void Control::LowerBody( double tm, double *Q0, double *qSens, double *qSensAbs, double *dqSens, double *tauSens, double *forceRightAnkle, double *forceLeftAnkle, double *torqueRightAnkle, double *torqueLeftAnkle, double *forceRightHand, double *forceLeftHand, double trans[][3], double *imuAngRates, double *imuAccelerations, double *h, double *dh, double *hD, double *dhD, double *tauDes, double *vals, double DTm)
+void Control::LowerBody( double tm, double *Q0, double *qSens, double *qSensAbs, double *dqSens, double *tauSens, double *forceRightAnkle, double *forceLeftAnkle, double *torqueRightAnkle, double *torqueLeftAnkle, double *forceRightHand, double *forceLeftHand, double trans[][3], double *imuAngRates, double *imuAccelerations, double *h, double *dh, double *hD, double *dhD, double *tauDes, double *vals, double DTm, double *euler)
 {
     StackAsVector(tmVec, tm, M);
     
@@ -139,11 +139,11 @@ void Control::LowerBody( double tm, double *Q0, double *qSens, double *qSensAbs,
     // Convert IMU frame data to global frame data.
     
     double testOrientation[3];
-    R2Euler(trans, testOrientation);
-    thr = testOrientation[0]; // 0
-    thp = testOrientation[1]; // 1
-    double thy = testOrientation[2];
-    std::cout<< thp << " : " << thr << " : " << thy << std::endl;
+    // R2Euler(trans, testOrientation);
+    thr = euler[0]; // 0
+    thp = euler[1]; // 1
+    double thy = euler[2];
+    std::cout<< " : " << thp << " : " << thr << " : " << thy << std::endl;
 
     // imuData.get_Orientation(trans, cdPR, imuOrientation);
     // imuData.get_AngRates(imuAngRates, cdPR, angRates);

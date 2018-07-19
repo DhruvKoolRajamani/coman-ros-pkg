@@ -47,9 +47,9 @@ void init_pos(double _tm, double Pos_sens0[], double Qfinal[], double Pos_sens[]
         dy[i] = Vel_sens[i]-vel_des;
         
         /* Uncomment for debugging */
-        cout << _tm << " : " << i << " : " << Pos_sens[i] << " : " 
-             << Pos_sens0[i] << " : " << Qfinal[i] << " : " 
-             << pos_des << " : " << tauDes[i] << endl;
+        // cout << _tm << " : " << i << " : " << Pos_sens[i] << " : " 
+        //      << Pos_sens0[i] << " : " << Qfinal[i] << " : " 
+        //      << pos_des << " : " << tauDes[i] << endl;
     }
 
     for ( int i= 0; i< N; i++ )
