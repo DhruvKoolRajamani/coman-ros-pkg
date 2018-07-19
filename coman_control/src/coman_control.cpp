@@ -244,8 +244,8 @@ void coman_control::setStateFeedback()
         {
             if (( revoluteJointsList[i].compare( jointState.name[j] ) ) == 0 )
             {
-                qSens[i] = jointState.position[j];
-                dqSens[i] = jointState.velocity[j];
+                qSens[i] = (float)jointState.position[j];
+                dqSens[i] = (float)jointState.velocity[j];
             }
         }
     }
