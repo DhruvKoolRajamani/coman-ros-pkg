@@ -78,10 +78,10 @@ def setupRobots(islandNamespace, robotNamespace, island_id, robot_id):
         machine_name=island
     )
 
-    i = 0
+    i=0
     args_rqt = namespace + "joint_states/position[{}] "
     args_rqt_plot = ""
-    for i in range(21, 24):
+    for i in range(n_joints):
         args_rqt_plot += args_rqt.format(i)
     node_rqt_plot = roslaunch.core.Node(
         package="rqt_plot",
@@ -115,7 +115,7 @@ def setupRobots(islandNamespace, robotNamespace, island_id, robot_id):
         spawnRobotNode,
         # spawnCameraNode,
         node_state,
-        node_rqt_plot
+        # node_rqt_plot
     ]
     return nodes
 

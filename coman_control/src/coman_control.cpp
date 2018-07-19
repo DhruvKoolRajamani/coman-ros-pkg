@@ -20,10 +20,14 @@ coman_control::coman_control( int nLinks, ros::NodeHandlePtr node_handle )
 
         // cout << i << " : " << revoluteJointsList[i] << endl;
 
-        string joint_control_topic_name = control_prefix + "/joint_effort_controller_" + jointName + "/command";
+        string joint_control_topic_name = 
+            control_prefix + "/joint_effort_controller_" + jointName + "/command";
         jointEffortList.push_back(joint_control_topic_name);
 
-        pubs_efforts = nh->advertise< std_msgs::Float64 > ( jointEffortList[i], callbackQueueSize );
+        pubs_efforts = nh->advertise< std_msgs::Float64 > ( 
+                                            jointEffortList[i], 
+                                            callbackQueueSize 
+                                            );
         vec_pubs_efforts.push_back( pubs_efforts );
 
         // JointState feedback
@@ -35,7 +39,11 @@ coman_control::coman_control( int nLinks, ros::NodeHandlePtr node_handle )
     }
 
     vector< string >::iterator itFtSensorTypes;
-    for ( itFtSensorTypes= ftSensorTypes.begin(); itFtSensorTypes!= ftSensorTypes.end(); itFtSensorTypes++ )
+    for ( 
+        itFtSensorTypes= ftSensorTypes.begin(); 
+        itFtSensorTypes!= ftSensorTypes.end(); 
+        itFtSensorTypes++ 
+        )
     {
         string ftSensorTopicName = prefix + "/ft_sensor/" + itFtSensorTypes->c_str();
         ftSensorList.push_back( ftSensorTopicName );
@@ -65,7 +73,11 @@ void coman_control::jointStateCallback( const sensor_msgs::JointState::ConstPtr 
 void coman_control::jointStateFeedback( ros::NodeHandlePtr n )
 {   
     string topic = prefix + "/joint_states";
-    jointStateSubscriber = n->subscribe( topic, 31, &coman_control::jointStateCallback, this );
+    jointStateSubscriber = n->subscribe( 
+                            topic, 31, 
+                            &coman_control::jointStateCallback, 
+                            this 
+                            );
 }
 
 void coman_control::f3dForceCallback( const geometry_msgs::WrenchStamped & WS )
@@ -81,7 +93,12 @@ void coman_control::f3dForceFeedback()
         for ( int i= 0; i< f3dFeedbackLegsList.size(); i++ )
         {
             // cout << f3dFeedbackLegsList[i] << " : " << endl;
-            f3dSubscriber = nh->subscribe( f3dFeedbackLegsList[i].c_str(), callbackQueueSize, &coman_control::f3dForceCallback, this );
+            f3dSubscriber = nh->subscribe( 
+                                f3dFeedbackLegsList[i].c_str(), 
+                                callbackQueueSize, 
+                                &coman_control::f3dForceCallback, 
+                                this 
+                                );
         }
     }
 }
@@ -97,11 +114,18 @@ void coman_control::imuFeedback( ros::NodeHandlePtr n )
 {
     if( imuSubscriberSet )
     {
-        imuSubscriber = n->subscribe( prefix + "/imu", callbackQueueSize, &coman_control::imuCallback, this );
+        imuSubscriber = n->subscribe( 
+                            prefix + "/imu", 
+                            callbackQueueSize, 
+                            &coman_control::imuCallback, 
+                            this 
+                            );
     }
 }
 
-void coman_control::ftSensorCallbackRAS( const geometry_msgs::WrenchStamped::ConstPtr& WS )
+void coman_control::ftSensorCallbackRAS( 
+                        const geometry_msgs::WrenchStamped::ConstPtr& WS
+                        )
 {
     forceRightAnkle[0] = WS->wrench.force.x;
     forceRightAnkle[1] = WS->wrench.force.y;
@@ -111,7 +135,9 @@ void coman_control::ftSensorCallbackRAS( const geometry_msgs::WrenchStamped::Con
     torqueRightAnkle[2] = WS->wrench.torque.z;
 }
 
-void coman_control::ftSensorCallbackLAS( const geometry_msgs::WrenchStamped::ConstPtr& WS )
+void coman_control::ftSensorCallbackLAS( 
+                        const geometry_msgs::WrenchStamped::ConstPtr& WS 
+                        )
 {
     forceLeftAnkle[0] = WS->wrench.force.x;
     forceLeftAnkle[1] = WS->wrench.force.y;
@@ -121,14 +147,18 @@ void coman_control::ftSensorCallbackLAS( const geometry_msgs::WrenchStamped::Con
     torqueLeftAnkle[2] = WS->wrench.torque.z;
 }
 
-void coman_control::ftSensorCallbackRFS( const geometry_msgs::WrenchStamped::ConstPtr& WS )
+void coman_control::ftSensorCallbackRFS( 
+                        const geometry_msgs::WrenchStamped::ConstPtr& WS 
+                        )
 {
     forceRightHand[0] = WS->wrench.force.x;
     forceRightHand[1] = WS->wrench.force.y;
     forceRightHand[2] = WS->wrench.force.z;
 }
 
-void coman_control::ftSensorCallbackLFS( const geometry_msgs::WrenchStamped::ConstPtr& WS )
+void coman_control::ftSensorCallbackLFS( 
+                        const geometry_msgs::WrenchStamped::ConstPtr& WS 
+                        )
 {
     forceLeftHand[0] = WS->wrench.force.x;
     forceLeftHand[1] = WS->wrench.force.y;
@@ -161,6 +191,8 @@ void coman_control::ftSensorFeedback( ros::NodeHandlePtr nSub )
         &coman_control::ftSensorCallbackLAS,
         this
     );
+
+    /* Using a loop -> Didnt work, see if this works later */
     // ftSubscriberLAS = nh->subscribe< geometry_msgs::WrenchStamped >(
     //     ftSensorList[3].c_str(),
     //     callbackQueueSize,
@@ -168,22 +200,25 @@ void coman_control::ftSensorFeedback( ros::NodeHandlePtr nSub )
     // );
 }
 
-geometry_msgs::Quaternion coman_control::getImuQuat()
+void coman_control::getImuFeedback(
+                        geometry_msgs::Quaternion _qImu,
+                        geometry_msgs::Vector3 _vImu,
+                        geometry_msgs::Vector3 _aImu
+                        )
 {
-    return qImu;
+    _qImu = qImu;
+    _vImu = vImu;
+    _aImu = aImu;
 }
 
-geometry_msgs::Vector3 coman_control::getImuVel()
-{
-    return vImu;
-}
-
-geometry_msgs::Vector3 coman_control::getImuAcc()
-{
-    return aImu;
-}
-
-void coman_control::getftSensorFeedback( double _forceRightAnkle[], double _forceLeftAnkle[], double _forceRightHand[], double _forceLeftHand[], double _torqueLeftAnkle[], double _torqueRightAnkle[] )
+void coman_control::getftSensorFeedback( 
+                        double _forceRightAnkle[], 
+                        double _forceLeftAnkle[], 
+                        double _forceRightHand[], 
+                        double _forceLeftHand[], 
+                        double _torqueLeftAnkle[], 
+                        double _torqueRightAnkle[] 
+                        )
 {
     for ( int i= 0; i< 3; i++ )
     {
@@ -208,7 +243,6 @@ void coman_control::setStateFeedback()
                 dqSens[i] = jointState.velocity[j];
             }
         }
-        // cout << i << " : " << revoluteJointsList[i] << " : " << qSens[i] << endl;
     }
 }
 
@@ -218,8 +252,8 @@ void coman_control::getStateFeedback( double _qSens[], double _dqSens[] )
 
     for ( int i = 0; i < NUM; i++ )
     {
-        _qSens[i] = qSens[i];
-        _dqSens[i] = dqSens[i];
+        _qSens[i] = (float)qSens[i];
+        _dqSens[i] = (float)dqSens[i];
     }
 }
 
