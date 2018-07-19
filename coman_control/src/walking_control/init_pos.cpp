@@ -17,16 +17,16 @@ void init_pos(double _tm, double Pos_sens0[], double Qfinal[], double Pos_sens[]
     Pos_sens0[0] = 0;
     Pos_sens0[12] = 0;
     
-    for ( int i = 0; i < 15; i++ )
+    for ( int i = 0; i < 23; i++ )
     {
-        Kp[i] = 200;
-        Kd[i] = 1;
+        Kp[i] = 300;
+        Kd[i] = 2;
     }
 
-    for ( int i = 15; i < N; i++ )
+    for ( int i = 23; i < N; i++ )
     {
-        Kp[i] = 5;
-        Kd[i] = 0;
+        Kp[i] = 2;
+        Kd[i] = 0.1;
     }
 
     // Kp[23] = 5;
