@@ -95,11 +95,9 @@ The coordinate frame called gaze defines the head position and orientation. The 
 and to define the end effectors of the robot
 
 The coordinate frame called base_link is rigidly attached to the robot root body. It is recommended to choose the robot waist as its root body. The base_link can be attached to the root in any arbitrary position or orientation; for every hardware platform there will be a different place on the base that provides an obvious point of reference. Note that REP 103 [1] specifies a preferred orientation for frames. -->
-  <link name="base_link">
-    <gravity>0</gravity>
-  </link>
+  <link name="base_link"/>
   <link name="Waist">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0.0 0.0 0.0" xyz="-0.026391145 -5.8216364E-4 0.052632312"/>
       <mass value="1.8008695"/>
@@ -126,7 +124,7 @@ The coordinate frame called base_link is rigidly attached to the robot root body
   <!-- The coordinate frame called torso is attached to the lowest body of the model which is a parent of l_gripper, r_gripper and gaze. -->
   <link name="torso"/>
   <link name="DWL">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="4.2999707E-4 -0.0097650317 0.033011157"/>
       <mass value="0.54588774"/>
@@ -147,7 +145,7 @@ The coordinate frame called base_link is rigidly attached to the robot root body
     </collision>
   </link>
   <link name="DWS">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="-0.0021273416 0.0033575235 -0.0010076896"/>
       <mass value="0.75398402"/>
@@ -168,7 +166,7 @@ The coordinate frame called base_link is rigidly attached to the robot root body
     </collision>
   </link>
   <link name="DWYTorso">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="-0.0358501 1.8286043E-5 0.117557148"/>
       <mass value="6.3617175"/>
@@ -208,7 +206,7 @@ and to define the end effectors of the robot -->
   <!-- LINKS -->
   <!-- ********************RIGHT LEG******************** -->
   <link name="RHipMot">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="-3.269678E-4 -0.023587321 -2.6496509E-4"/>
       <mass value="0.89258227"/>
@@ -229,7 +227,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="RThighUpLeg">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0.0012591632 -0.016896372 -0.058903336"/>
       <mass value="1.0246101"/>
@@ -250,7 +248,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="RThighLowLeg">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="9.8720058E-4 6.7037262E-4 -0.075716843"/>
       <mass value="1.7001134"/>
@@ -271,7 +269,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="RLowLeg">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0.0024612666 -0.0053099614 -0.08598948"/>
       <mass value="1.4098179"/>
@@ -292,7 +290,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="RFootmot">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="8.8067281E-4 -9.2224881E-4 2.3038476E-4"/>
       <mass value="0.72992131"/>
@@ -313,7 +311,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="RFoot">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0.00969210464 -0.0090460227 -0.043062308"/>
       <mass value="0.66646684"/>
@@ -335,7 +333,7 @@ and to define the end effectors of the robot -->
   </link>
   <!-- ********************LEFT LEG******************** -->
   <link name="LHipMot">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="-3.269678E-4 0.023587321 -2.6496509E-4"/>
       <mass value="0.89258227"/>
@@ -356,7 +354,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="LThighUpLeg">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0.0012591632 0.016896372 -0.058903336"/>
       <mass value="1.0246101"/>
@@ -377,7 +375,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="LThighLowLeg">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="9.8720058E-4 -6.7037262E-4 -0.075716843"/>
       <mass value="1.7001134"/>
@@ -398,7 +396,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="LLowLeg">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0.0024612666 0.0053099614 -0.085989484"/>
       <mass value="1.4098179"/>
@@ -419,7 +417,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="LFootmot">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="8.8067281E-4 9.2224881E-4 2.3038476E-4"/>
       <mass value="0.72992131"/>
@@ -440,7 +438,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="LFoot">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0.0096921046 0.0090460227 -0.043062308"/>
       <mass value="0.66646684"/>
@@ -497,7 +495,7 @@ and to define the end effectors of the robot -->
   <!-- LINKS -->
   <!-- RIGHT ARM -->
   <link name="RShp">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0.0099500565 -0.038682024 1.6446924E-4"/>
       <mass value="0.56782202"/>
@@ -518,7 +516,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="RShr">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="-0.0038936743 2.2022151E-6 -0.0048616005"/>
       <mass value="0.77683752"/>
@@ -539,7 +537,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="RShy">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0.0022714213 -0.0071091517 -0.057455221"/>
       <mass value="1.0462304"/>
@@ -560,7 +558,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="RElb">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="-6.5553403E-4 -9.3464748E-4 -9.3101289E-4"/>
       <mass value="0.63306933"/>
@@ -582,7 +580,7 @@ and to define the end effectors of the robot -->
   </link>
   <!-- LEFT ARM -->
   <link name="LShp">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0.0099500565 0.038682024 1.6446924E-4"/>
       <mass value="0.56782202"/>
@@ -603,7 +601,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="LShr">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="-0.0038936743 -2.2022151E-6 -0.0048616005"/>
       <mass value="0.77683752"/>
@@ -624,7 +622,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="LShy">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0.0022714213 0.0071091517 -0.057455221"/>
       <mass value="1.0462304"/>
@@ -645,7 +643,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="LElb">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="-6.5553403E-4 9.3464748E-4 -9.3101289E-4"/>
       <mass value="0.63306933"/>
@@ -686,7 +684,7 @@ and to define the end effectors of the robot -->
   <!-- ## WRONG NUMBERS FOR INERTIAL!!! FIX THEM!! ## -->
   <!-- In ROBOTRAN this link is named LFARM -->
   <link name="LForearm">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 -0.0282"/>
       <mass value="0.93351655"/>
@@ -709,7 +707,7 @@ and to define the end effectors of the robot -->
   <!-- ## WRONG NUMBERS FOR INERTIAL!!! FIX THEM!! ## -->
   <!-- Here I have used the inertia of a full cylinder with r = 0.02 [m] and h = 0.07 [m] -->
   <link name="LWrMot2">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.26070556"/>
@@ -732,7 +730,7 @@ and to define the end effectors of the robot -->
   <!-- ## WRONG NUMBERS FOR INERTIAL!!! FIX THEM!! ## -->
   <!-- Here I have used the inertia of a concave cylinder with r = 0.02 [m] -->
   <link name="LWrMot3">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.054007518"/>
@@ -756,7 +754,7 @@ and to define the end effectors of the robot -->
   <!-- ## WRONG NUMBERS FOR INERTIAL!!! FIX THEM!! ## -->
   <!-- In ROBOTRAN this link is named RFArm -->
   <link name="RForearm">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 -0.0282"/>
       <mass value="0.93351655"/>
@@ -779,7 +777,7 @@ and to define the end effectors of the robot -->
   <!-- ## WRONG NUMBERS FOR INERTIAL!!! FIX THEM!! ## -->
   <!-- Here I have used the inertia of a full cylinder with r = 0.02 [m] and h = 0.07 [m] -->
   <link name="RWrMot2">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.26070556"/>
@@ -802,7 +800,7 @@ and to define the end effectors of the robot -->
   <!-- ## WRONG NUMBERS FOR INERTIAL!!! FIX THEM!! ## -->
   <!-- Here I have used the inertia of a concave cylinder with r = 0.02 [m] -->
   <link name="RWrMot3">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.054007518"/>
@@ -830,7 +828,7 @@ and to define the end effectors of the robot -->
   <!-- ************ HANDS ************ -->
   <!-- LINKS -->
   <link name="RSoftHand">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.3"/>
@@ -851,7 +849,7 @@ and to define the end effectors of the robot -->
     </collision>
   </link>
   <link name="LSoftHand">
-    <gravity>0</gravity>
+    
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <mass value="0.3"/>
@@ -966,7 +964,7 @@ and to define the end effectors of the robot -->
   <joint name="gaze_joint" type="fixed">
     <parent link="torso"/>
     <child link="gaze"/>
-    <origin rpy="0 0 0" xyz="0 0 0.1"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
   <!-- End Head -->
   <!-- Waist -->

@@ -15,95 +15,62 @@ void init_pos(double _tm, double Pos_sens0[], double Qfinal[], double Pos_sens[]
     double pos_des;
     double vel_des;
 
-    // Lower Body
+    Pos_sens0[0] = 0;
+    Pos_sens0[12] = 0;
     
-    // for (int i = 0; i < 23; i++)
-    // {
-    //     Kp[i] = 10;
-    //     Kd[i] = 0.1;
-    // }
+    for (int i = 0; i < 23; i++)
+    {
+        Kp[i] = 60;
+        Kd[i] = 1;
+    }
 
-    // Kp[23] = 5;
-    // Kd[23] = 0;
+    Kp[23] = 10;
+    Kd[23] = 0;
 
-    // Kp[24] = 5;
-    // Kd[24] = 0;
+    Kp[24] = 10;
+    Kd[24] = 0;
     
-    // Kp[25] = 5;
-    // Kd[25] = 0;
+    Kp[25] = 10;
+    Kd[25] = 0;
     
-    // Kp[26] = 0;
-    // Kd[26] = 0;
+    Kp[26] = 10;
+    Kd[26] = 0;
     
-    // Kp[27] = 5;
-    // Kd[27] = 0;
+    Kp[27] = 10;
+    Kd[27] = 0;
     
-    // Kp[28] = 5;
-    // Kd[28] = 0;
+    Kp[28] = 10;
+    Kd[28] = 0;
     
-    // Kp[29] = 0;
-    // Kd[29] = 0;
+    Kp[29] = 0;
+    Kd[29] = 0;
     
-    // Kp[30] = 0;
-    // Kd[30] = 0;
-    
-    // Kp[31] = 0;
-    // Kd[31] = 0;
+    Kp[30] = 0;
+    Kd[30] = 0;
 
-    // for ( int i = 0; i < 15; i++ )
-    // {
-    //     Kp[i] = 10;
-    //     Kd[i] = 0.1;
-    // }
-
-    // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 - Kd = 0, 
-    const int JOINT_NUM = 15;
-    Kp[JOINT_NUM] = 10;
-    Kd[JOINT_NUM] = 0;
-
-    // if ( JOINT_NUM == 15 )
-    // {
-    //     pos_des = Qfinal[JOINT_NUM]+(Pos_sens0[JOINT_NUM]-Qfinal[JOINT_NUM])*exp(-ALPHA * _tm);
-    //     vel_des = -ALPHA*(Pos_sens0[JOINT_NUM]-Qfinal[JOINT_NUM])*exp(-ALPHA * _tm);
-    //     cout << JOINT_NUM << " : " << pos_des << endl;
-    // }
-    
     for ( int i = 0; i < N; i++ )
     {
-        if ( i == 15 )
-        {
-            pos_des = Qfinal[i]+(Pos_sens0[i]-Qfinal[i])*exp(-ALPHA * _tm);
-            vel_des = -ALPHA*(Pos_sens0[i]-Qfinal[i])*exp(-ALPHA * _tm);
-            y[i] = Pos_sens[i]-pos_des;
-            dy[i] = Vel_sens[i]-vel_des;
-            // y[i] = 0.0; //Pos_sens[i] - 0.45*(1 - exp(-ALPHA * _tm));
-            // dy[i] = Vel_sens[i] + ALPHA*0.45*exp(-ALPHA * _tm);
+        pos_des = Qfinal[i]+(Pos_sens0[i]-Qfinal[i])*exp(-ALPHA * _tm);
+        vel_des = -ALPHA*(Pos_sens0[i]-Qfinal[i])*exp(-ALPHA * _tm);
+        y[i] = Pos_sens[i]-pos_des;
+        dy[i] = Vel_sens[i]-vel_des;
 
-            y[i] = Pos_sens[i] - Qfinal[i];
-
-            cout << _tm << " : J : " << i << " : Sense : " << Pos_sens[i] << " : SInit : " << Pos_sens0[i] << " : FPos : " << Qfinal[i] << " : DPos : " << pos_des << endl;
-        }
-        else
-        {
-            // pos_des = qinit<vector> + *(error -> sensor - qinit)*e^(-alpha*_tm)
-            pos_des = Qfinal[i]+(Pos_sens0[i]-Qfinal[i])*exp(-ALPHA * _tm);
-            vel_des = -ALPHA*(Pos_sens0[i]-Qfinal[i])*exp(-ALPHA * _tm);
-            y[i] = Pos_sens[i]-pos_des;
-            dy[i] = Vel_sens[i]-vel_des;
-            // cout << _tm << " : here : ";
-
-            // y[i] = Qfinal[i] - Pos_sens[i];
-            // dy[i] = Qfinal[i] - Pos_sens[i];
-        }
+        // cout << _tm << " : " << i << " : " << Pos_sens[i] << " : " 
+        //      << Pos_sens0[i] << " : " << Qfinal[i] << " : " 
+        //      << pos_des << " : " << tauDes[i] << endl;
     }
 
     for ( int i= 0; i< N; i++ )
     {
         double temp;
         temp = -Kp[i]*(y[i]) - Kd[i]*(dy[i]);
-        tauDes[i] = temp;
-        
-        // cout << _tm << " : " << i << " : " <<  Pos_sens[i] << " : " << temp << " : "  << pos_des << endl;
+        if( temp < 1000000000000 && temp > -10000000000000 )
+            tauDes[i] = temp;
+        else
+        {
+            cout << i << "\n******************************\n";
+            tauDes[i] = 1.0;
+        }
     }
 }
 

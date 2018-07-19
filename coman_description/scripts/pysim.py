@@ -102,7 +102,7 @@ def setupRobots(islandNamespace, robotNamespace, island_id, robot_id):
         model_location=[
             0, 
             robot_id - 1,
-            0.55
+            0.517
         ], 
         camera_location=[1.2, (robot_id), 0.2]
     )

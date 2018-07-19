@@ -7,7 +7,6 @@ using namespace geometry_msgs;
 
 bool                            isInit = true;
 
-const double                    RIGHT_ELBOW_YAW = 0, LEFT_ELBOW_YAW = 0;
 const double                    TIME2WALK=10;
 
 unsigned int                    whichComan_ = 1;
@@ -19,13 +18,14 @@ static double                   begin_time = -1.0;
 static double                   _tm = 0;
 static double                   Q0[NUM];
 static double                   qknee0 = 0.2, qP0 = -0.1, qR0 = 0.055*1;
+const double                    RIGHT_ELBOW_YAW = 0, LEFT_ELBOW_YAW = 0, HIP_YAW = 0;
 static double                   qInit[] = {
-                                0, 0.075, 0, qP0, qP0, -qR0, 0,
-                                qknee0, qP0*1.4, qR0, qR0*1, 0,
-                                qknee0, qP0*1.4, -qR0*1, 0.45,
-                                -0.2, 0.0, -1.75, 0.45, 0.2, 0.0,
-                                -1.75, RIGHT_ELBOW_YAW, 0.0, 0.0,
-                                LEFT_ELBOW_YAW, 0, 0, 0, 0
+                                0, 0.075, 0, qP0, qP0, -qR0, HIP_YAW, // 0 - 6
+                                qknee0, qP0*1.4, qR0, qR0*1, HIP_YAW, // 7 - 11
+                                qknee0, qP0*1.4, -qR0*1, // 12 - 14
+            /* 15 onwards */    0.45, -0.2, 0.0, -1.75, 0.45, // 15 - 19
+                                0.2, 0.0, -1.75, RIGHT_ELBOW_YAW, // 20 - 23
+                                0.0, 0.0, LEFT_ELBOW_YAW, 0, 0, 0, 0 // 24 - 30
                                 };
 
 double                          vals[NUM], qSens[NUM], dqSens[NUM], 
@@ -121,70 +121,7 @@ int main(int argc, char **argv)
         // Enter init_pos
         if ( _tm < TIME2WALK && begin_time != -1 )
         {
-            double          y[NUM], dy[NUM], Kp[NUM], Kd[NUM], Q0_temp[NUM];
-            double          pos_des, vel_des;
-            double          ALPHA = 1;
-
-            for ( int i= 0; i< NUM; i++ )
-            {
-                Q0_temp[i] = Q0[i];
-            }
-
-            Q0_temp[0] = 0;
-            Q0_temp[12] = 0;
-            
-            for (int i = 0; i < 23; i++)
-            {
-                Kp[i] = 10;
-                Kd[i] = 0.1;
-            }
-
-            // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15:Kp = 3:Kd = 0,
-            //  
-            const int JOINT_NUM = 15;
-            Kp[JOINT_NUM] = 10;
-            Kd[JOINT_NUM] = 0.1;
-
-            for ( int i = 0; i < NUM; i++ )
-            {
-                if ( i == 24 )
-                {
-                    pos_des = qInit[i]+(Q0[i]-qInit[i])*exp(-ALPHA * _tm);
-                    vel_des = -ALPHA*(Q0[i]-qInit[i])*exp(-ALPHA * _tm);
-                    // y[i] = qSens[i]-pos_des;
-                    // dy[i] = dqSens[i]-vel_des;
-                    // y[i] = 0.0; //qSens[i] - 0.45*(1 - exp(-ALPHA * _tm));
-                    // dy[i] = dqSens[i] + ALPHA*0.45*exp(-ALPHA * _tm);
-
-                    y[i] = 0.0; // qSens[i] - qInit[i];
-                    dy[i] = 0.0; // (Q0_temp[i] - qInit[i]) * exp( -ALPHA * _tm );                  
-                }
-                else
-                {
-                    // pos_des = qinit<vector> + 
-                    // *(error -> sensor - qinit)*e^(-alpha*_tm)
-                    pos_des = qInit[i]+(Q0_temp[i]-qInit[i])*exp(-ALPHA * _tm);
-                    vel_des = -ALPHA*(Q0_temp[i]-qInit[i])*exp(-ALPHA * _tm);
-                    y[i] = qSens[i]-pos_des;
-                    dy[i] = dqSens[i]-vel_des;
-
-                    // y[i] = qInit[i] - qSens[i];
-                    // dy[i] = qInit[i] - qSens[i];
-                }
-                // cout << _tm << " : " << i << " : " << qSens[i] << " : " 
-                //      << Q0_temp[i] << " : " << qInit[i] << " : " 
-                //      << pos_des << " : " << tauDes[i] << endl;
-            }
-
-            for ( int i= 0; i< NUM; i++ )
-            {
-                double temp;
-                temp = -Kp[i]*(y[i]) - Kd[i]*(dy[i]);
-                if( temp < 100000000 && temp > -100000000 )
-                    tauDes[i] = temp;
-                else
-                    cout << i << "\n******************************\n";
-            }
+            init_pos( _tm, Q0, qInit, qSens, dqSens, tauDes, whichComan_ );
         }
 
         /* Debug IMU Data */
