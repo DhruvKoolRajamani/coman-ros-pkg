@@ -5,13 +5,22 @@
 In order to run this package, add it to your catkin workspace. You can use
 the following commands:
 
-If you dont have a catkin workspace initialized: `mkdir -p ~/catkin_ws/src`
-Then: `cd catkin_ws/src/`
-Clone this repository
-Next: `cd ~/catkin_ws/`
-Finally: `catkin_make`
+If you dont have a catkin workspace initialized:
 
-Now source your workspace from the catkin base directory and continue: `source devel/setup.bash`
+`mkdir -p ~/catkin_ws/src`
+
+`cd catkin_ws/src/`
+
+`git clone git@gitlab.com:DhruvKoolRajamani/coman-ros-pkg.git`
+
+`cd ~/catkin_ws/`
+
+`catkin_make`
+
+Now source your workspace from the catkin base directory and continue: 
+
+`source devel/setup.bash`
+
 Start roscore: `roscore`
 
 `Ctrl+Alt+T`
