@@ -147,19 +147,7 @@ int main(int argc, char **argv)
 
             for ( int i = 0; i < NUM; i++ )
             {
-                if ( i == 15 )
-                {
-                    pos_des = qInit[i]+(Q0_temp[i]-qInit[i])*exp(-ALPHA * _tm);
-                    vel_des = -ALPHA*(Q0_temp[i]-qInit[i])*exp(-ALPHA * _tm);
-                    // y[i] = qSens[i]-pos_des;
-                    // dy[i] = dqSens[i]-vel_des;
-                    // y[i] = 0.0; //qSens[i] - 0.45*(1 - exp(-ALPHA * _tm));
-                    // dy[i] = dqSens[i] + ALPHA*0.45*exp(-ALPHA * _tm);
-
-                    y[i] = qSens[i] - qInit[i];
-                    dy[i] = (Q0_temp[i] - qInit[i]) * exp( -ALPHA * _tm );                    
-                }
-                else if ( i == 24 )
+                if ( i == 24 )
                 {
                     pos_des = qInit[i]+(Q0[i]-qInit[i])*exp(-ALPHA * _tm);
                     vel_des = -ALPHA*(Q0[i]-qInit[i])*exp(-ALPHA * _tm);
@@ -168,8 +156,8 @@ int main(int argc, char **argv)
                     // y[i] = 0.0; //qSens[i] - 0.45*(1 - exp(-ALPHA * _tm));
                     // dy[i] = dqSens[i] + ALPHA*0.45*exp(-ALPHA * _tm);
 
-                    y[i] = qSens[i] - qInit[i];
-                    dy[i] = (Q0_temp[i] - qInit[i]) * exp( -ALPHA * _tm );                  
+                    y[i] = 0.0; // qSens[i] - qInit[i];
+                    dy[i] = 0.0; // (Q0_temp[i] - qInit[i]) * exp( -ALPHA * _tm );                  
                 }
                 else
                 {
@@ -183,9 +171,9 @@ int main(int argc, char **argv)
                     // y[i] = qInit[i] - qSens[i];
                     // dy[i] = qInit[i] - qSens[i];
                 }
-                cout << _tm << " : " << i << " : " << qSens[i] << " : " 
-                     << Q0_temp[i] << " : " << qInit[i] << " : " 
-                     << pos_des << " : " << tauDes[i] << endl;
+                // cout << _tm << " : " << i << " : " << qSens[i] << " : " 
+                //      << Q0_temp[i] << " : " << qInit[i] << " : " 
+                //      << pos_des << " : " << tauDes[i] << endl;
             }
 
             for ( int i= 0; i< NUM; i++ )
