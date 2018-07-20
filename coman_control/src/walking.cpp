@@ -1,19 +1,12 @@
-#include "coman_control.hpp"
-#include "walking_control/init_pos.hh"
-#include "walking_control/Control.hh"
-#include "R2Euler.hh"
+#include "walking.hpp"
 
-#include <boost/bind.hpp>
-
-using namespace geometry_msgs;
-
-bool                            isInit = true;
+bool                            isInit = false;
 
 const double                    TIME2WALK=10;
 
 unsigned int                    whichComan_ = 1;
 
-static int                      n;
+static int                      n, islands;
 
 static double                   dt = 0;
 static double                   begin_time = -1.0;
@@ -40,77 +33,21 @@ double                          forceRightAnkle[3], torqueRightAnkle[3],
 double                          h[NUM], dh[NUM], hD[NUM], dhD[NUM];
 double                          thr, thy, thp, euler[3], testOrientation[3];
 
+string                          log_path;
+
+vector< int >                   robots, n_joints;
 vector< double >                vTime;
+vector< string >                namespaces, LogPath;
 
 geometry_msgs::Quaternion       Q_imu;
 geometry_msgs::Vector3          V_imu, A_imu;
 
 Control                         control;
 
+static ifstream                 inputfile;
+static ofstream                 outputfile;
 
-void init ( double torques[] )
-{
-    for ( int i= 0; i< NUM; i++ )
-    {        
-        torques[i] = 0.0;
-    }
-}
-
-static void toEulerAngle(const geometry_msgs::Quaternion q, double *roll, double *pitch, double *yaw, double Trans[][3] )
-{
-	// roll (x-axis rotation)
-	double sinr = +2.0 * (q.w * q.x + q.y * q.z);
-	double cosr = +1.0 - 2.0 * (q.x * q.x + q.y * q.y);
-	*roll = atan2(sinr, cosr);
-
-	// pitch (y-axis rotation)
-	double sinp = +2.0 * (q.w * q.y - q.z * q.x);
-	if (fabs(sinp) >= 1)
-		*pitch = copysign(M_PI / 2, sinp); // use 90 degrees if out of range
-	else
-		*pitch = asin(sinp);
-
-	// yaw (z-axis rotation)
-	double siny = +2.0 * (q.w * q.z + q.x * q.y);
-	double cosy = +1.0 - 2.0 * (q.y * q.y + q.z * q.z);  
-	*yaw = atan2(siny, cosy);
-
-    Trans[0][0] = 2*((q.x*q.x) + (q.w*q.w)) - 1;
-    Trans[0][1] = 2*((q.x*q.y) - (q.w*q.z));
-    Trans[0][2] = 2*((q.x*q.z) + (q.w*q.y));
-    Trans[1][0] = 2*((q.x*q.y) + (q.w*q.z));
-    Trans[1][1] = 2*((q.w*q.w) + (q.y*q.y)) - 1;
-    Trans[1][2] = 2*((q.y*q.z) - (q.w*q.x));
-    Trans[2][0] = 2*((q.x*q.z) - (q.w*q.y));
-    Trans[2][1] = 2*((q.y*q.z) + (q.w*q.x));
-    Trans[2][2] = 2*((q.w*q.w) + (q.z*q.z)) - 1;
-}
-
-void toTrans(double E_imu[3], double Trans[3][3])
-{
-    double thp, thr, thy;
-
-    thr = E_imu[0];
-    thp = E_imu[1];
-    thy = E_imu[2];
-
-    double c1 = cos(-thr); // 1
-    double c2 = cos(-thp); // 2
-    double c3 = cos(-thy); // 3
-    double s1 = sin(-thr);
-    double s2 = sin(-thp);            
-    double s3 = sin(-thy);
-
-    Trans[0][0] = c2*c3;
-    Trans[0][1] = c1*s3 + c3*s1*s2;
-    Trans[0][2] = s1*s3 - c1*c3*s2;
-    Trans[1][0] = -c2*s3;
-    Trans[1][1] = c1*c3 - s1*s2*s3;
-    Trans[1][2] = c3*s1 + c1*s2*s3;
-    Trans[2][0] = s2;
-    Trans[2][1] = -c2*s1;
-    Trans[2][2] = c1*c2;
-}
+using namespace std;
 
 int main(int argc, char **argv)
 {
@@ -121,10 +58,19 @@ int main(int argc, char **argv)
         ros::NodeHandlePtr(new ros::NodeHandle("/coman_control"));
     ros::NodeHandlePtr nhSub1 = 
         ros::NodeHandlePtr(new ros::NodeHandle("~"));
+    ros::NodeHandlePtr nhParams = 
+        ros::NodeHandlePtr(new ros::NodeHandle("~"));
 
     ros::Rate loop_rate = 1000;
 
+    // getRobotParams( nhParams, namespaces, LogPath, &islands, robots, n_joints );
     n = NUM;
+
+    nhParams -> getParam( "/log_path", log_path );
+    
+    string sOutputFile = log_path + "/tempdata.txt";
+    outputfile.open( sOutputFile );
+    cout << sOutputFile << endl;
 
     // Initialize controller
     coman_control controller(n, nhMain);
@@ -224,6 +170,7 @@ int main(int argc, char **argv)
                         Trans, ImuAngRates, ImuAccelerations, h, dh, 
                         hD, dhD, tauDes, vals, dt, euler
                         );
+            control.SaveVars( outputfile );            
         }
 
         for ( int i= 0; i< NUM; i++ )
