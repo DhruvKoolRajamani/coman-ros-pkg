@@ -120,3 +120,81 @@ void toTrans(double E_imu[3], double Trans[3][3])
     Trans[2][1] = -c2*s1;
     Trans[2][2] = c1*c2;
 }
+
+// void SaveVars(
+//             std::ofstream &outputFile, double tm_, double *qSens, double *dqSens, 
+//             double *forceRightAnkle, double *forceLeftAnkle, double *torqueRightAnkle,
+//             double *torqueLeftAnkle, double *forceRightHand, double *forceLeftHand, double 
+//             )
+// {
+//     // Save Data  tme, qSens, qSensAbs, dqSens, tauSens, forceRightAnkle, forceLeftAnkle, torqueRightAnkle, torqueLeftAnkle, forceRightHand, forceLeftHand,forceSensors, trans, imuAngRates, imuAccelerations
+
+//     outputFile << tm_;
+//             // start_id = 2
+//             for (int i = 0; i < N; i++){
+//                 outputFile << " " << qSens[i];
+//             }
+//             // start_id = 2 + N
+//             for (int i = 0; i < N; i++)
+//             {
+//                 outputFile << " " << dqSens[i];
+//             }
+//             // 2 + 2N
+//             for (int i = 0; i < 3; i++)
+//             {
+//                 outputFile << " " << forceRightAnkle[i];
+//             }
+//             // start_id = 5 + 2N
+//             for (int i = 0; i < 3; i++)
+//             {
+//                 outputFile << " " << forceLeftAnkle[i];
+//             }
+//             // start_id = 8 + 2N
+//             for (int i = 0; i < 3; i++)
+//             {
+//                 outputFile << " " << varsOut.torqueRightAnkle_[i];
+//             }
+//             // start_id = 11 + 2N
+//             for (int i = 0; i < 3; i++)
+//             {
+//                 outputFile << " " << varsOut.torqueLeftAnkle_[i];
+//             }
+//             // start_id = 14 + 2N
+//             for (int i = 0; i < 3; i++)
+//             {
+//                 outputFile << " " << varsOut.forceRightHand_[i];
+//             }
+//             // start_id = 17 + 2N
+//             for (int i = 0; i < 3; i++)
+//             {
+//                 outputFile << " " << varsOut.forceLeftHand_[i];
+//             }
+//             // start_id = 20 + 2N
+//             for (int i = 0; i < N; i++)
+//             {
+//                 outputFile << " " << varsOut.tauDes_[i];
+//             }
+//             // start_id = 20 + 3N
+//             for (int i = 0; i < 3; i++)
+//             {
+//                 for (int j = 0; j < 3; j++)
+//                 {
+//                     outputFile << " " << varsOut.trans_[i][j];
+//                 }
+//             }
+//             // start_id = 29 + 3N
+//             for (int i = 0; i < 3; i++)
+//             {
+//                 outputFile << " " << varsOut.imuAngRates_[i];
+//             }
+//             // start_id = 32 + 3N
+//             for (int i = 0; i < 3; i++)
+//             {
+//                 outputFile << " " << varsOut.imuAccelerations_[i];
+//             }
+//             outputFile // start_id = 35 + 3N
+//                       << " " << varsOut.thp_ 
+//                       << " " << varsOut.thr_ // 36 + 3N
+//                       << std::endl;
+// }
+

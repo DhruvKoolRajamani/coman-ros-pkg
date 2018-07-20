@@ -25,13 +25,13 @@ static double                   qInit[] = {
 
 double                          vals[NUM], qSens[NUM], dqSens[NUM], 
                                 tauSens[NUM], qSensAbs[NUM], tauDes[NUM];
-double                          Trans[3][3];
+double                          Trans[3][3], testTrans[3][3];
 double                          ImuAngRates[3], ImuAccelerations[3];
 double                          forceRightAnkle[3], torqueRightAnkle[3], 
                                 forceLeftAnkle[3], torqueLeftAnkle[3], 
                                 forceRightHand[3], forceLeftHand[3];
 double                          h[NUM], dh[NUM], hD[NUM], dhD[NUM];
-double                          thr, thy, thp, euler[3], testOrientation[3];
+double                          th1, th3, th2, euler[3], testOrientation[3];
 
 string                          log_path;
 
@@ -136,17 +136,17 @@ int main(int argc, char **argv)
         //      (Q_imu.z*Q_imu.z) + (Q_imu.w*Q_imu.w) << " : Vel : " 
         //      << V_imu.x << endl;
 
-        toEulerAngle( Q_imu, &thr, &thp, &thy, Trans );
-
-        euler[0] = thr;
-        euler[1] = thp;
-        euler[2] = thy;
+        toEulerAngle( Q_imu, &th1, &th2, &th3, testTrans );
 
         // R2Euler(Trans, testOrientation);
 
-        // toTrans( euler, Trans );
+        euler[1] = th1; // pitch
+        euler[0] = th2; // yaw
+        euler[2] = th3; // roll
 
-        // cout << "thpQ : " << thp << " : thrQ : " << thr << " : thp : " << testOrientation[1] << " : thr : " << testOrientation[0] << endl;  
+        toTrans( euler, Trans );
+
+        cout << "thp : " << euler[1] << " : thr : " << euler[2] << " : thy : " << euler[0] << endl;  
 
         ImuAngRates[0] = V_imu.x;
         ImuAngRates[1] = V_imu.y;
@@ -160,6 +160,7 @@ int main(int argc, char **argv)
         if ( _tm < TIME2WALK && begin_time != -1 )
         {
             init_pos( _tm, Q0, qInit, qSens, dqSens, tauDes, whichComan_ );
+            // SaveVars(  )
         }
         else
         {

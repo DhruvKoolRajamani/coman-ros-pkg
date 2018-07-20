@@ -435,7 +435,9 @@ void WalkingController3::EvalTorques(double s, double tInStep, double f_d, doubl
     Kd[3] = 15-12.5*pow(kR,3);
     Kp[4] = 70+160*pow(kL,3);//180+70*pow(1-k,3);
     Kd[4] = 15-12.5*pow(kL,3);//25-12.5*pow(1-k,3);
+
 #ifdef INV_KIN_FTX
+
     Kp[3] = 200 + 130 * kR;
     Kd[3] = 7 + 0 * kR;
     Kp[4] = 285 + 130 * kL;//180+70*pow(1-k,3);
@@ -455,6 +457,7 @@ void WalkingController3::EvalTorques(double s, double tInStep, double f_d, doubl
     Kd[9] = 17.5-7.5*kR;
     Kp[14] = 270-70*kL;//180+70*pow(1-k,3);
     Kd[14] = 17.5-7.5*kL;
+    
 #endif
 
 
