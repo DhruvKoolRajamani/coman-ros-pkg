@@ -170,7 +170,7 @@ add_executable(${PROJECT_NAME}_walking src/walking.cpp)
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
 set_target_properties(
-  ${PROJECT_NAME}_walking PROPERTIES OUTPUT_NAME node PREFIX "walking"
+  ${PROJECT_NAME}_walking PROPERTIES OUTPUT_NAME controller PREFIX "walking_"
   )
 
 ## Add cmake target dependencies of the executable
