@@ -65,7 +65,17 @@ void init ( double torques[] )
     }
 }
 
-static void toEulerAngle(const geometry_msgs::Quaternion q, double *roll, double *pitch, double *yaw, double Trans[][3] )
+void calcQuaternion( const geometry_msgs::Quaternion q, geometry_msgs::Quaternion *outQ )
+{
+    double norm = sqrt( q.x*q.x + q.y*q.y + q.z*q.z + q.w*q.w );
+
+    outQ->x = q.x/norm;
+    outQ->y = q.y/norm;
+    outQ->z = q.z/norm;
+    outQ->w = q.w/norm;
+}
+
+static void toEulerAngle(const geometry_msgs::Quaternion q, double *roll, double *pitch, double *yaw )
 {
 	// roll (x-axis rotation)
 	double sinr = +2.0 * (q.w * q.x + q.y * q.z);
@@ -83,16 +93,6 @@ static void toEulerAngle(const geometry_msgs::Quaternion q, double *roll, double
 	double siny = +2.0 * (q.w * q.z + q.x * q.y);
 	double cosy = +1.0 - 2.0 * (q.y * q.y + q.z * q.z);  
 	*yaw = atan2(siny, cosy);
-
-    Trans[0][0] = 2*((q.x*q.x) + (q.w*q.w)) - 1;
-    Trans[0][1] = 2*((q.x*q.y) - (q.w*q.z));
-    Trans[0][2] = 2*((q.x*q.z) + (q.w*q.y));
-    Trans[1][0] = 2*((q.x*q.y) + (q.w*q.z));
-    Trans[1][1] = 2*((q.w*q.w) + (q.y*q.y)) - 1;
-    Trans[1][2] = 2*((q.y*q.z) - (q.w*q.x));
-    Trans[2][0] = 2*((q.x*q.z) - (q.w*q.y));
-    Trans[2][1] = 2*((q.y*q.z) + (q.w*q.x));
-    Trans[2][2] = 2*((q.w*q.w) + (q.z*q.z)) - 1;
 }
 
 void toTrans(double E_imu[3], double Trans[3][3])
@@ -121,80 +121,84 @@ void toTrans(double E_imu[3], double Trans[3][3])
     Trans[2][2] = c1*c2;
 }
 
-// void SaveVars(
-//             std::ofstream &outputFile, double tm_, double *qSens, double *dqSens, 
-//             double *forceRightAnkle, double *forceLeftAnkle, double *torqueRightAnkle,
-//             double *torqueLeftAnkle, double *forceRightHand, double *forceLeftHand, double 
-//             )
-// {
-//     // Save Data  tme, qSens, qSensAbs, dqSens, tauSens, forceRightAnkle, forceLeftAnkle, torqueRightAnkle, torqueLeftAnkle, forceRightHand, forceLeftHand,forceSensors, trans, imuAngRates, imuAccelerations
+void SaveVars(
+            std::ofstream &outputFile, double tm_, double *qSens, double *dqSens, 
+            double *forceRightAnkle, double *forceLeftAnkle, double *torqueRightAnkle,
+            double *torqueLeftAnkle, double *forceRightHand, double *forceLeftHand,
+            double imuAngRates[], double imuAccelerations[], double tauDes[], 
+            double trans[][3], double thp, double thr, int n
+            )
+{
+    // Save Data  tme, qSens, qSensAbs, dqSens, tauSens, forceRightAnkle, forceLeftAnkle, torqueRightAnkle, torqueLeftAnkle, forceRightHand, forceLeftHand,forceSensors, trans, imuAngRates, imuAccelerations
 
-//     outputFile << tm_;
-//             // start_id = 2
-//             for (int i = 0; i < N; i++){
-//                 outputFile << " " << qSens[i];
-//             }
-//             // start_id = 2 + N
-//             for (int i = 0; i < N; i++)
-//             {
-//                 outputFile << " " << dqSens[i];
-//             }
-//             // 2 + 2N
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 outputFile << " " << forceRightAnkle[i];
-//             }
-//             // start_id = 5 + 2N
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 outputFile << " " << forceLeftAnkle[i];
-//             }
-//             // start_id = 8 + 2N
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 outputFile << " " << varsOut.torqueRightAnkle_[i];
-//             }
-//             // start_id = 11 + 2N
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 outputFile << " " << varsOut.torqueLeftAnkle_[i];
-//             }
-//             // start_id = 14 + 2N
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 outputFile << " " << varsOut.forceRightHand_[i];
-//             }
-//             // start_id = 17 + 2N
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 outputFile << " " << varsOut.forceLeftHand_[i];
-//             }
-//             // start_id = 20 + 2N
-//             for (int i = 0; i < N; i++)
-//             {
-//                 outputFile << " " << varsOut.tauDes_[i];
-//             }
-//             // start_id = 20 + 3N
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 for (int j = 0; j < 3; j++)
-//                 {
-//                     outputFile << " " << varsOut.trans_[i][j];
-//                 }
-//             }
-//             // start_id = 29 + 3N
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 outputFile << " " << varsOut.imuAngRates_[i];
-//             }
-//             // start_id = 32 + 3N
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 outputFile << " " << varsOut.imuAccelerations_[i];
-//             }
-//             outputFile // start_id = 35 + 3N
-//                       << " " << varsOut.thp_ 
-//                       << " " << varsOut.thr_ // 36 + 3N
-//                       << std::endl;
-// }
+    int N = n;
+
+    outputFile << tm_;
+            // start_id = 2
+            for (int i = 0; i < N; i++){
+                outputFile << " " << qSens[i];
+            }
+            // start_id = 2 + N
+            for (int i = 0; i < N; i++)
+            {
+                outputFile << " " << dqSens[i];
+            }
+            // 2 + 2N
+            for (int i = 0; i < 3; i++)
+            {
+                outputFile << " " << forceRightAnkle[i];
+            }
+            // start_id = 5 + 2N
+            for (int i = 0; i < 3; i++)
+            {
+                outputFile << " " << forceLeftAnkle[i];
+            }
+            // start_id = 8 + 2N
+            for (int i = 0; i < 3; i++)
+            {
+                outputFile << " " << torqueRightAnkle[i];
+            }
+            // start_id = 11 + 2N
+            for (int i = 0; i < 3; i++)
+            {
+                outputFile << " " << torqueLeftAnkle[i];
+            }
+            // start_id = 14 + 2N
+            for (int i = 0; i < 3; i++)
+            {
+                outputFile << " " << forceRightHand[i];
+            }
+            // start_id = 17 + 2N
+            for (int i = 0; i < 3; i++)
+            {
+                outputFile << " " << forceLeftHand[i];
+            }
+            // start_id = 20 + 2N
+            for (int i = 0; i < N; i++)
+            {
+                outputFile << " " << tauDes[i];
+            }
+            // start_id = 20 + 3N
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    outputFile << " " << trans[i][j];
+                }
+            }
+            // start_id = 29 + 3N
+            for (int i = 0; i < 3; i++)
+            {
+                outputFile << " " << imuAngRates[i];
+            }
+            // start_id = 32 + 3N
+            for (int i = 0; i < 3; i++)
+            {
+                outputFile << " " << imuAccelerations[i];
+            }
+            outputFile // start_id = 35 + 3N
+                      << " " << thp
+                      << " " << thr // 36 + 3N
+                      << std::endl;
+}
 

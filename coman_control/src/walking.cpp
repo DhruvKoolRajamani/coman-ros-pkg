@@ -31,7 +31,7 @@ double                          forceRightAnkle[3], torqueRightAnkle[3],
                                 forceLeftAnkle[3], torqueLeftAnkle[3], 
                                 forceRightHand[3], forceLeftHand[3];
 double                          h[NUM], dh[NUM], hD[NUM], dhD[NUM];
-double                          th1, th3, th2, euler[3], testOrientation[3];
+double                          thr, thp, thy, euler[3], testOrientation[3];
 
 string                          log_path;
 
@@ -45,7 +45,7 @@ geometry_msgs::Vector3          V_imu, A_imu;
 Control                         control;
 
 static ifstream                 inputfile;
-static ofstream                 outputfile;
+static ofstream                 outputfile, outputfileInit;
 
 using namespace std;
 
@@ -70,7 +70,9 @@ int main(int argc, char **argv)
     
     string sOutputFile = log_path + "/tempdata.txt";
     outputfile.open( sOutputFile );
-    cout << sOutputFile << endl;
+
+    string sInitOutputFile = log_path + "/tempdata_init.txt";
+    outputfileInit.open( sInitOutputFile );
 
     // Initialize controller
     coman_control controller(n, nhMain);
@@ -97,6 +99,8 @@ int main(int argc, char **argv)
         
         // Get IMU Feedback
         controller.getImuFeedback( &Q_imu, &V_imu, &A_imu );
+
+        calcQuaternion( Q_imu, &Q_imu );
 
         // Get force torque sensor Feedback
         controller.getftSensorFeedback( 
@@ -136,17 +140,15 @@ int main(int argc, char **argv)
         //      (Q_imu.z*Q_imu.z) + (Q_imu.w*Q_imu.w) << " : Vel : " 
         //      << V_imu.x << endl;
 
-        toEulerAngle( Q_imu, &th1, &th2, &th3, testTrans );
+        toEulerAngle( Q_imu, &thr, &thp, &thy );
 
-        // R2Euler(Trans, testOrientation);
+        euler[0] = thr; // pitch
+        euler[1] = thp; // yaw
+        euler[2] = thy; // roll
 
-        euler[1] = th1; // pitch
-        euler[0] = th2; // yaw
-        euler[2] = th3; // roll
+        cout << "\nthr : " << euler[0] << " : thp : " << euler[1] << " : thy : " << euler[2] << endl;
 
         toTrans( euler, Trans );
-
-        cout << "thp : " << euler[1] << " : thr : " << euler[2] << " : thy : " << euler[0] << endl;  
 
         ImuAngRates[0] = V_imu.x;
         ImuAngRates[1] = V_imu.y;
@@ -160,7 +162,9 @@ int main(int argc, char **argv)
         if ( _tm < TIME2WALK && begin_time != -1 )
         {
             init_pos( _tm, Q0, qInit, qSens, dqSens, tauDes, whichComan_ );
-            // SaveVars(  )
+            SaveVars( outputfileInit, _tm, qSens, dqSens, forceRightAnkle, forceLeftAnkle,
+                        torqueRightAnkle, torqueLeftAnkle, forceRightHand, forceLeftHand,
+                        ImuAngRates, ImuAccelerations, tauDes, Trans, euler[1], euler[0], n );
         }
         else
         {
