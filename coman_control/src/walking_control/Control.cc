@@ -3,10 +3,9 @@
 #include "WhichSide.hh"
 #include "forward_kinematics_pelvis1.hh"
 #include "forward_kinematics_swing_foot.hh"
-#include "imu_data.hh"
 #include "bezier.hh"
 #include "saturate.hh"
-//#include "init_pos.hh"
+#include "init_pos.hh"
 #include "WalkingController3.hh"
 #include <math.h>
 #include "StFtToPelvisFK.hh"
@@ -17,7 +16,7 @@
 //#include "AvgFilter.hh" to add
 #include "MedianFilter.h"
 #include "StackAsVector.hh"
-#include "state_estimation.h"
+// #include "state_estimation.h"
 #include <climits>
 #include "R2Euler.hh"
 
@@ -70,7 +69,6 @@ std::vector<double> pyMidVec;
 double thPelvis[3], swFtPos[3], dswFtPos[3];
 double TIME_WALK = 10, T = 0.5, ZERO_S = 0.01, TIME_REWALK = 10, DTm;
 
-imu_data imuData;
 static double  pyEnd;
 WalkingController3 walkingController3;
 
@@ -84,7 +82,7 @@ static bool flagStopCommand = false;
 static double f0AtStop = f_d;
 static double timeAtStop = 0, f_dAtStop = f_d;
 static double timeInAir = 0;
-static double STEP_LENGTH = 0.05; // 0.07
+static double STEP_LENGTH = 0.0; // 0.07
 static bool flagStart = false;
 static int sg = -1;
 static int stepNumber = 1;
@@ -129,7 +127,7 @@ static double p_pelvis_right[3];
 static double velocity_straight[3];
 
 
-void Control::LowerBody( double tm, double *Q0, double *qSens, double *qSensAbs, double *dqSens, double *tauSens, double *forceRightAnkle, double *forceLeftAnkle, double *torqueRightAnkle, double *torqueLeftAnkle, double *forceRightHand, double *forceLeftHand, double trans[][3], double *imuAngRates, double *imuAccelerations, double *h, double *dh, double *hD, double *dhD, double *tauDes, double *vals)
+void Control::LowerBody( double tm, double *Q0, double *qSens, double *qSensAbs, double *dqSens, double *tauSens, double *forceRightAnkle, double *forceLeftAnkle, double *torqueRightAnkle, double *torqueLeftAnkle, double *forceRightHand, double *forceLeftHand, double trans[][3], double *imuAngRates, double *imuAccelerations, double *h, double *dh, double *hD, double *dhD, double *tauDes, double *vals, double DTm, double euler[])
 {
     StackAsVector(tmVec, tm, M);
     
@@ -145,7 +143,8 @@ void Control::LowerBody( double tm, double *Q0, double *qSens, double *qSensAbs,
     thr = testOrientation[0]; // 0
     thp = testOrientation[1]; // 1
     double thy = testOrientation[2];
-    // std::cout<< thp << " : " << thr << " : " << thy << std::endl;
+
+    std::cout << "thr : " << thr << " : thp : " << thp << " : thy : " << thy << std::endl;
 
     // imuData.get_Orientation(trans, cdPR, imuOrientation);
     // imuData.get_AngRates(imuAngRates, cdPR, angRates);
@@ -309,7 +308,6 @@ void Control::LowerBody( double tm, double *Q0, double *qSens, double *qSensAbs,
     double xCopR = forceRightAnkleF[2] < 50 ? -(torqueRightAnkleF[1] + forceRightAnkleF[0] * H) / 50 : -(torqueRightAnkleF[1] + forceRightAnkleF[0] * H) / forceRightAnkleF[2];
     double xCopL = forceLeftAnkleF[2] < 50 ? -(torqueLeftAnkleF[1] + forceLeftAnkleF[0] * H) / 50 :  -(torqueLeftAnkleF[1] + forceLeftAnkleF[0] * H) / forceLeftAnkleF[2];
 
-#ifndef REAL_ROBOT
 t = tm - TIME_WALK;
 double tw = 0;
 if (t >= TIME_WALK && t <= TIME_WALK + 0.1){
@@ -492,7 +490,7 @@ if (forceRightAnkleZMed < AirTresh && forceLeftAnkleZMed < AirTresh){
             Q0[i] = qSens[i];
         }
     }
-    init_pos(tm - timeInAir, Q0, Q_INIT, qSens, dqSens, tauDes, vals, whichComan_);
+    init_pos(tm - timeInAir, Q0, Q_INIT, qSens, dqSens, tauDes, whichComan_);
     //   cout << tm - timeInAir << endl;
 }
 else{
@@ -502,7 +500,7 @@ else{
         timeInAir = 0;
     }
     if (tm - t0 < TIME_REWALK){
-        init_pos(tm - t0, Q_INIT, Q_INIT, qSens, dqSens, tauDes, vals, whichComan_);
+        init_pos(tm - t0, Q_INIT, Q_INIT, qSens, dqSens, tauDes, whichComan_);
         // cout << tm - t0 << endl;
     }
     else{
@@ -512,213 +510,7 @@ else{
                                         pPelvisAbs, vxAbsF, h, dh, hD, dhD, tauDes, vals); // *** no need to send whichcoman command?
     }
 }
-#else
-t = tm - TIME_WALK;
 
-// cout<<t<<endl;
-
-double tw = 0;
-if (t >= TIME_WALK && t <= TIME_WALK + 0.1){
-    f_d = 1 / T;
-    tw = t - TIME_WALK;
-    f0 = tw <= 0.1 ? 10 * tw * f_d : f_d; // fast but continuously go to f_d from f0  = 0;
-}
-// if tm > 2 * TIME_WALK start walking
-if (t >= TIME_WALK && startWalkingFlag == 0){
-    startWalkingFlag = 1;
-    for (int i = 0; i < N; i++){
-        qSensInit[i] = qSens[i];
-    }
-    for (int i = 0; i < 3; i++){
-        thPelvisInit[i] = thPelvis[i];
-        swFtPosInit[i] = pSwFtInH[i];
-        orSwFtInit[i] = orSwFt[i];
-    }
-    thpF_init = thpF;
-    thrF_init = thrF;
-    px0 = pxAbs;
-}
-
-
-if (flagMidStep == false && vyAbs > 0){
-    pyMidVec.push_back(pyAbs);
-    if (pyMidVec.size() > 2){
-        pyMidVec.erase(pyMidVec.begin());
-        frontalBias = (pyMidVec[0] + pyMidVec[1]) / 2;
-    }
-    flagMidStep = true;
-
-}
-
-static double begsteptime = TIME_WALK;
-if (side != oldSide){
-    begsteptime = tm;
-    ++stepNumber;
-    SwapArrays(indexSt, indexSw, 6);
-    EraseVectors();
-    flagMidStep = false;
-    QswKMid = QswKMid_INIT;
-}
-tInStep = tm - begsteptime;
-for (int i = 0; i < 6; i++){
-    qSt[i] = qSens[indexSt[i]];
-    dqSt[i] = dqSens[indexSt[i]];
-    qStAbs[i] = qSensAbs[indexSt[i]];
-    qStAbsMed[i] = qSensAbsMed[indexSt[i]];
-    qSw[i] = qSens[indexSw[i]];
-}
-// Find initial values at the beginning of the step
-if (tInStep < ZERO_S){
-    for (int i = 0; i < N; i++){
-        qSensInit[i] = qSens[i];
-    }
-    for (int i = 0; i < 3; i++){
-        thPelvisInit[i] = thPelvis[i];
-        swFtPosInit[i] = pSwFtInH[i];
-        orSwFtInit[i] = orSwFt[i];
-    }
-    thpF_init = thpF;
-    thrF_init = thrF;
-    px0 = pxAbs;
-}
-
-// Determine the stance side and sign (sg)
-oldSide = side;
-WhichSide(kF, s, side, sg);
-if (side != oldSide){
-    //            if (stepNumber >= 15 && stepNumber < 30){
-    //                STEP_LENGTH += 0.002;
-    //                f_d += .02;
-    //                if (stepNumber == 15){
-    //                    freqVec[0] = f_d;
-    //                    freqVec[1] = f_d;
-    //                    QswKMid += 0.1;
-    //                }
-    //                f0 += 0.02;
-    //                Q_INIT[5] = -0.04;
-    //                Q_INIT[10] = 0.04;
-    //            }
-    //            if (stepNumber >= 30 && stepNumber < 35){
-    //                STEP_LENGTH += DTm;
-    //                f_d +=.02;
-    //                if (stepNumber == 30){
-    //                    freqVec[0] = f_d;
-    //                    freqVec[1] = f_d;
-    //                    QswKMid += 0.1;
-    //                }
-    //                f0 += 0.02;
-    //                Q_INIT[5] = -0.03;
-    //                Q_INIT[10] = 0.03;
-    //            }
-    if (stepNumber == firstStopN){
-        STEP_LENGTH = 2 * STEP_LENGTH / 3;
-    }
-    if (stepNumber == firstStopN + 1){
-        STEP_LENGTH = STEP_LENGTH / 3;
-    }
-    if (stepNumber == firstStopN + 2){
-        STEP_LENGTH = 0;
-    }
-    x0 = (stepNumber > 2 && t > 1) ? STEP_LENGTH : 0;
-    vxDes = STEP_LENGTH == 0 ? 0: 2 * x0 * f_d;
-    pyEnd = pyAbs;
-    if (stepNumber > 1 && tInStep > 0.15){
-        freqVec.push_back(1 / tInStep);
-        freqVec.erase(freqVec.begin());
-        avgFreq = (freqVec[0] + freqVec[1]) / 2;
-        last_step_freq = freqVec[1];
-        f0 = f0 - 0.1 * (avgFreq - f_d);  // for fd = 2.5 the coeff was set to 0.05
-        f0 = saturate(f0, 3, 1.35); // added check ****
-    }
-    if (stepNumber >= firstStopN + stepsToStop + 2 && abs(pSwFtInH[0] + pPelvisAbs[0]) < 0.03 && abs(vxAbsF) < 0.1 && s > 0.25 && flagStopCommand == false){
-        flagStopCommand = true;
-        f0AtStop = f0;
-        f_dAtStop = f_d;
-        timeAtStop = tm;
-    }
-}
-
-if (flagStopCommand == true){
-    f_d = saturatel(f_dAtStop - 10 * (tm - timeAtStop), 0);
-    // drives the stance outputs to the end of the step (s = 1)
-    if (f_d == 0 && tm - timeAtStop > 2 * T){
-        f0 = f_d;
-    }
-}
-
-if (f0 == 0 && tm > timeAtStop + 3 * T){
-    if (pPelvisAbs[0] > 0.1 || pPelvisAbs[0] < -0.06 || kF < 0.1 || kF > 0.9){
-        f_d = 1 / T;
-        f0 = f_d;
-        STEP_LENGTH = 0;
-        stepNumber = 1;
-        firstStopN = 2;
-        side = kF < 0.5 ? 0 : 1;
-        if (pPelvisAbs[0] < -0.06){
-            QswKMid = 1.3;
-        }
-        else
-        {
-            QswKMid = 1.1;
-        }
-        flagStopCommand = false;
-    }
-}
-
-s = saturate((tInStep) * f0,1,0);
-//        kR = pow(kF, pow(f0 / 3, 0.3));
-//        kL = pow(1 - kF, pow(f0 / 3, 0.3));
-if (tInStep > DTm*(M4+M2+M5)){
-    //            pSwFtInH[0] = pxswf;
-    //            pSwFtInH[1] = pyswf;
-    vSwFtInH[0] = vxswf;
-    vSwFtInH[1] = vyswf;
-}
-else if (tInStep > DTm*(M5+M4)){
-    vSwFtInH[0] = (pxswf-pxswf_old)/(DTm*M5);
-    dswFtPitch = (swFtPitch-swFtPitch_old)/(DTm*M5);
-    dswFtRoll = (swFtRoll-swFtRoll_old)/(DTm*M5);
-}
-for (int i = 0; i < 3; i++){
-    swFtPos[i] = pSwFtInH[i];
-    dswFtPos[i] = vSwFtInH[i];
-}
-
-// High-level foot adjustment
-DesiredFtPos(pxAbs, pyAbs, tInStep, px0, vxDes, vxAbs, vxAbsF, vyAbs, sg, deltaX, deltaY, kv, frontalBias, s, T);
-
-if (forceRightAnkleZMed < AirTresh && forceLeftAnkleZMed < AirTresh){
-    stepNumber = 1;
-    side = SIDE_INITIAL;
-    oldSide = side;
-    inAir = 1;
-    if (timeInAir == 0){
-        timeInAir = tm;
-        for (int i = 0; i < N; i++){
-            Q0[i] = qSens[i];
-        }
-    }
-    init_pos(tm - timeInAir, Q0, Q_INIT, qSens, dqSens, tauDes, vals, whichComan_);
-    //   cout << tm - timeInAir << endl;
-}
-else{
-    if (inAir == 1){
-        t0 = tm;
-        inAir = 0;
-        timeInAir = 0;
-    }
-    if (tm - t0 < TIME_REWALK){
-        init_pos(tm - t0, Q_INIT, Q_INIT, qSens, dqSens, tauDes, vals, whichComan_);
-        // cout << tm - t0 << endl;
-    }
-    else{
-        walkingController3.EvalOutputs(s, f0, Q_INIT, qSens, dqSens, kR, kL, indexSt, indexSw, thp, dthpF, thr, dthrF, x0, deltaX, deltaY, qSensInit,
-                                        swFtPosInit, thpF_init, thrF_init, px0, pSwFtInH, vSwFtInH, orSwFt, dorSwFt, orSwFtInit, h, dh, hD, dhD, STEP_LENGTH, QswKMid);
-        walkingController3.EvalTorques(s,tInStep, f_d, f0, x0, px0, Q_INIT, qSens, dqSens, kR, kL, orSwFt, tauAnkTorque, forceRightAnkleF, forceLeftAnkleF, torqueRightAnkleF, torqueLeftAnkleF,
-                                        pPelvisAbs, vxAbsF, h, dh, hD, dhD, tauDes, vals);
-    }
-}
-#endif
     // Var for Output
         varsOut.tm_=tm;
         varsOut.n_=N;

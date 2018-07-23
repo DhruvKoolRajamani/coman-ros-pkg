@@ -68,10 +68,9 @@ def main():
 
     nodes = []
     islands = rospy.get_param("islands")
-    robots = rospy.get_param("robots")
     for island in range(1, 1+islands):
-        robot = robots[island - 1]
-        for robot_id in range(1, 1+robot):
+        robots = rospy.get_param("/island_{}/robots".format( island ))
+        for robot_id in range(1, 1+robots):
             namespace = rospy.get_param(
                 "namespace_{}_{}".format(island, robot_id)
             )

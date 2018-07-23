@@ -1,17 +1,12 @@
-#include "coman_control.hpp"
-#include "walking_control/init_pos.hh"
+#include "walking.hpp"
 
-#include <boost/bind.hpp>
-
-using namespace geometry_msgs;
-
-bool                            isInit = true;
+bool                            isInit = false;
 
 const double                    TIME2WALK=10;
 
 unsigned int                    whichComan_ = 1;
 
-static int                      n;
+static int                      n, islands;
 
 static double                   dt = 0;
 static double                   begin_time = -1.0;
@@ -30,26 +25,29 @@ static double                   qInit[] = {
 
 double                          vals[NUM], qSens[NUM], dqSens[NUM], 
                                 tauSens[NUM], qSensAbs[NUM], tauDes[NUM];
-double                          Trans[3][3];
+double                          Trans[3][3], testTrans[3][3];
 double                          ImuAngRates[3], ImuAccelerations[3];
 double                          forceRightAnkle[3], torqueRightAnkle[3], 
                                 forceLeftAnkle[3], torqueLeftAnkle[3], 
                                 forceRightHand[3], forceLeftHand[3];
 double                          h[NUM], dh[NUM], hD[NUM], dhD[NUM];
+double                          thr, thp, thy, euler[3], testOrientation[3];
 
+string                          log_path;
+
+vector< int >                   robots, n_joints;
 vector< double >                vTime;
+vector< string >                namespaces, LogPath;
 
 geometry_msgs::Quaternion       Q_imu;
 geometry_msgs::Vector3          V_imu, A_imu;
 
+Control                         control;
 
-void init ( double torques[] )
-{
-    for ( int i= 0; i< NUM; i++ )
-    {        
-        torques[i] = 0.0;
-    }
-}
+static ifstream                 inputfile;
+static ofstream                 outputfile, outputfileInit;
+
+using namespace std;
 
 int main(int argc, char **argv)
 {
@@ -60,10 +58,21 @@ int main(int argc, char **argv)
         ros::NodeHandlePtr(new ros::NodeHandle("/coman_control"));
     ros::NodeHandlePtr nhSub1 = 
         ros::NodeHandlePtr(new ros::NodeHandle("~"));
+    ros::NodeHandlePtr nhParams = 
+        ros::NodeHandlePtr(new ros::NodeHandle("~"));
 
     ros::Rate loop_rate = 1000;
 
+    // getRobotParams( nhParams, namespaces, LogPath, &islands, robots, n_joints );
     n = NUM;
+
+    nhParams -> getParam( "/log_path", log_path );
+    
+    string sOutputFile = log_path + "/tempdata.txt";
+    outputfile.open( sOutputFile );
+
+    string sInitOutputFile = log_path + "/tempdata_init.txt";
+    outputfileInit.open( sInitOutputFile );
 
     // Initialize controller
     coman_control controller(n, nhMain);
@@ -82,9 +91,16 @@ int main(int argc, char **argv)
 
         // store simulation time for future use.
         vTime.push_back( _tm );
+
+        if( dt != 0 )
+            dt = _tm - vTime.back();
+        else
+            dt += _tm;
         
         // Get IMU Feedback
-        controller.getImuFeedback( Q_imu, V_imu, A_imu );
+        controller.getImuFeedback( &Q_imu, &V_imu, &A_imu );
+
+        calcQuaternion( Q_imu, &Q_imu );
 
         // Get force torque sensor Feedback
         controller.getftSensorFeedback( 
@@ -118,27 +134,21 @@ int main(int argc, char **argv)
 
         _tm -= begin_time;
 
-        // Enter init_pos
-        if ( _tm < TIME2WALK && begin_time != -1 )
-        {
-            init_pos( _tm, Q0, qInit, qSens, dqSens, tauDes, whichComan_ );
-        }
-
         /* Debug IMU Data */
         // cout << dt << " : Magnitude should be 1 = " 
         //      << (Q_imu.x*Q_imu.x) + (Q_imu.y*Q_imu.y) + 
-        //      (Q_imu.z*Q_imu.z) + (Q_imu.w*Q_imu.w) << " : " 
+        //      (Q_imu.z*Q_imu.z) + (Q_imu.w*Q_imu.w) << " : Vel : " 
         //      << V_imu.x << endl;
 
-        Trans[0][0] = 2*((Q_imu.x*Q_imu.x) + (Q_imu.w*Q_imu.w)) - 1;
-        Trans[0][1] = 2*((Q_imu.x*Q_imu.y) - (Q_imu.w*Q_imu.z));
-        Trans[0][2] = 2*((Q_imu.x*Q_imu.z) + (Q_imu.w*Q_imu.y));
-        Trans[1][0] = 2*((Q_imu.x*Q_imu.y) + (Q_imu.w*Q_imu.z));
-        Trans[1][1] = 2*((Q_imu.w*Q_imu.w) + (Q_imu.y*Q_imu.y)) - 1;
-        Trans[1][2] = 2*((Q_imu.y*Q_imu.z) - (Q_imu.w*Q_imu.x));
-        Trans[2][0] = 2*((Q_imu.x*Q_imu.z) - (Q_imu.w*Q_imu.y));
-        Trans[2][1] = 2*((Q_imu.y*Q_imu.z) + (Q_imu.w*Q_imu.x));
-        Trans[2][2] = 2*((Q_imu.w*Q_imu.w) + (Q_imu.z*Q_imu.z)) - 1;
+        toEulerAngle( Q_imu, &thr, &thp, &thy );
+
+        euler[0] = thr; // pitch
+        euler[1] = thp; // yaw
+        euler[2] = thy; // roll
+
+        cout << "\nthr : " << euler[0] << " : thp : " << euler[1] << " : thy : " << euler[2] << endl;
+
+        toTrans( euler, Trans );
 
         ImuAngRates[0] = V_imu.x;
         ImuAngRates[1] = V_imu.y;
@@ -148,15 +158,40 @@ int main(int argc, char **argv)
         ImuAccelerations[1] = A_imu.y;
         ImuAccelerations[2] = A_imu.z;
 
+        // Enter init_pos
+        if ( _tm < TIME2WALK && begin_time != -1 )
+        {
+            init_pos( _tm, Q0, qInit, qSens, dqSens, tauDes, whichComan_ );
+            SaveVars( outputfileInit, _tm, qSens, dqSens, forceRightAnkle, forceLeftAnkle,
+                        torqueRightAnkle, torqueLeftAnkle, forceRightHand, forceLeftHand,
+                        ImuAngRates, ImuAccelerations, tauDes, Trans, euler[1], euler[0], n );
+        }
+        else
+        {
+            control.LowerBody(
+                        _tm, Q0, qSens, qSensAbs, dqSens, tauSens, 
+                        forceRightAnkle, forceLeftAnkle, torqueRightAnkle, 
+                        torqueLeftAnkle, forceRightHand, forceLeftHand, 
+                        Trans, ImuAngRates, ImuAccelerations, h, dh, 
+                        hD, dhD, tauDes, vals, dt, euler
+                        );
+            control.SaveVars( outputfile );            
+        }
+
+        for ( int i= 0; i< NUM; i++ )
+        {
+            double temp = tauDes[i];
+            if( temp < 1000000000 && temp > -1000000000 )
+                tauDes[i] = temp;
+            else
+                tauDes[i] = 0.0;
+        }
+
         // publish joint effort commands
         controller.jointEffortControllers( tauDes );
 
         // dt is a variable to see loop rate size in secs in case loop_rate is
         // too fast and is making the code skip hooks.
-        if( dt != 0 )
-            dt = _tm - vTime.back();
-        else
-            dt += _tm;
 
         ros::spinOnce();
         loop_rate.sleep();

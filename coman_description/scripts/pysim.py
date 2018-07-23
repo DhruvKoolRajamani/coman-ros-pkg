@@ -6,6 +6,7 @@ import rospy
 import rospkg
 import roslaunch
 import subprocess
+import os
 
 from spawn import spawn_node
 from gen_camera_urdf import generate_robot as cam_generate_robot
@@ -35,6 +36,13 @@ def setupRobots(islandNamespace, robotNamespace, island_id, robot_id):
         robot.to_xml_string()
     )
 
+    log_path = rospack.get_path('coman_analysis')
+
+    rospy.set_param(
+        "log_path",
+        log_path
+    )
+
     joints = get_revolute_joints(robot)
 
     n_joints = 0
@@ -56,7 +64,7 @@ def setupRobots(islandNamespace, robotNamespace, island_id, robot_id):
 
     rospy.set_param(
         arg,
-        n_joints
+        int(n_joints)
     )
 
     cam_robot = cam_generate_robot(namespace)
@@ -102,7 +110,7 @@ def setupRobots(islandNamespace, robotNamespace, island_id, robot_id):
         model_location=[
             0, 
             robot_id - 1,
-            0.517
+            0.517       #0.517
         ], 
         camera_location=[1.2, (robot_id), 0.2]
     )
@@ -170,6 +178,11 @@ def setupIslands(islandNamespace, island_id, robots):
     nodes.append(node_gzclient)
     nodes.append(node_gzstate)
 
+    rospy.set_param(
+        namespace + "robots",
+        robots
+    )
+
     for robot_id in range(1, robots+1):
         nodes.extend(setupRobots(islandNamespace, "robot", island_id, robot_id))
         
@@ -186,11 +199,6 @@ def launch_sim(islands, robots):
     rospy.set_param(
         "islands",
         islands
-    )
-
-    rospy.set_param(
-        "robots",
-        robots
     )
 
     for island_id in range(1, islands+1):

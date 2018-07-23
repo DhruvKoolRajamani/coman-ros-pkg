@@ -1,29 +1,20 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(coman_control)
+project(coman_analysis)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  gazebo_ros
   roscpp
   rospy
+  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
-find_package(Boost REQUIRED COMPONENTS system)
-
-find_package(Eigen3 REQUIRED)
-
-INCLUDE_DIRECTORIES(include ${EIGEN3_INCLUDE_DIR})
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-  /usr/include/eigen3/Eigen
-)
+# find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -79,7 +70,7 @@ include_directories(
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
+#   std_msgs
 # )
 
 ################################################
@@ -112,10 +103,10 @@ include_directories(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES coman_control
-  CATKIN_DEPENDS gazebo_ros roscpp rospy
-  # DEPENDS system_lib
+#  INCLUDE_DIRS include
+#  LIBRARIES coman_analysis
+#  CATKIN_DEPENDS roscpp rospy std_msgs
+#  DEPENDS system_lib
 )
 
 ###########
@@ -125,35 +116,14 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-  include
-  include/walking_control
-  include/walking_control/includeall
-  include/walking_control/includeall/state_estimation_include
+# include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-add_library(${PROJECT_NAME}
-  src/walking.cpp
-)
-add_library(${PROJECT_NAME}_init
-  src/walking_control/init_pos.cpp
-)
-add_library(${PROJECT_NAME}_coman
-  src/coman_control.cpp
-)
-add_library(${PROJECT_NAME}_Control
-  src/walking_control/Control.cc
-)
-
-file(GLOB SOURCES
-    "include/walking_control/includeall/*.cc"
-    "include/walking_control/includeall/*.cpp"
-)
-
-add_library(${PROJECT_NAME}_depends
-  ${SOURCES}
-)
+# add_library(${PROJECT_NAME}
+#   src/${PROJECT_NAME}/coman_analysis.cpp
+# )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -163,29 +133,22 @@ add_library(${PROJECT_NAME}_depends
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_walking src/walking.cpp)
+# add_executable(${PROJECT_NAME}_node src/coman_analysis_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
-set_target_properties(
-  ${PROJECT_NAME}_walking PROPERTIES OUTPUT_NAME controller PREFIX "walking_"
-  )
+# set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(
-  ${PROJECT_NAME}_walking
-  ${PROJECT_NAME}_init
-  ${PROJECT_NAME}_coman
-  ${PROJECT_NAME}_Control
-  ${SOURCES}
-  ${catkin_LIBRARIES}
-)
+# target_link_libraries(${PROJECT_NAME}_node
+#   ${catkin_LIBRARIES}
+# )
 
 #############
 ## Install ##
@@ -227,7 +190,7 @@ target_link_libraries(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_coman_control.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_coman_analysis.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

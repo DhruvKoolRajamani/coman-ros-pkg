@@ -42,9 +42,9 @@ class coman_control
     void setNodeHandle( ros::NodeHandlePtr node_handle ){ nh = node_handle; }
     
     void getImuFeedback(
-                        geometry_msgs::Quaternion _qImu,
-                        geometry_msgs::Vector3 _vImu,
-                        geometry_msgs::Vector3 _aImu
+                        geometry_msgs::Quaternion *_qImu,
+                        geometry_msgs::Vector3 *_vImu,
+                        geometry_msgs::Vector3 *_aImu
                         );
 
     void getftSensorFeedback(
@@ -85,9 +85,8 @@ class coman_control
 
     int                                 n;
     int                                 callbackQueueSize = 1;
-    
-    float                               timestep;
 
+    double                              _tm;
     double                              qSens[NUM], dqSens[NUM];
     double                              tauSens[NUM];
     double                              forceRightAnkle[3], 
