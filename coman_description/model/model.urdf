@@ -79,6 +79,56 @@
 and to define the end effectors of the robot.
 The coordinate frame called gaze defines the head position and orientation. The orientation indicates in which direction the head appears to be looking regardless of any sensors (camera for instance). -->
   <link name="gaze"/>
+  <!-- LINKS -->
+  <!-- <link name="Xtion_body">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.047 0.0 0.40"/>
+      <mass value="0.39"/>
+      <inertia ixx="0.01" ixy="3.34E-7" ixz="-2.66E-4" iyy="0.009" iyz="1.97E-6" izz="5.1E-4"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 3.14159265359" xyz="-0.020281504 0.0 -0.68662053"/>
+      <geometry name="Xtion_body_visual">
+        <mesh filename="package://coman_description/model/meshes/XtionBase.STL" scale="0.03937 0.03937 0.03937"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 3.14159265359" xyz="-0.020281504 0.0 -0.68662053"/>
+      <geometry name="Xtion_body_collision">
+        <mesh filename="package://coman_description/model/meshes/simple/XtionBase.STL" scale="0.03937 0.03937 0.03937"/>
+      </geometry>
+    </collision>
+  </link> -->
+  <link name="Xtion_cam_body">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <mass value="0.2"/>
+      <inertia ixx="0.00053" ixy="0.0" ixz="0.0" iyy="0.00008" iyz="0.0" izz="0.00053"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry name="Xtion_cam_body_visual">
+        <box size="0.02 0.1 0.02"/>
+      </geometry>
+    </visual>
+    <!-- <collision>
+      <origin rpy="0 0 3.14159265359" xyz="-0.0915 0.0 -1.2778"/>
+      <geometry name="Xtion_cam_body_collision">
+        <mesh filename="package://coman_description/model/meshes/ex.STL" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision> -->
+  </link>
+  <!-- JOINTS -->
+  <joint name="Xtion_cam_joint" type="fixed">
+    <parent link="torso"/>
+    <child link="Xtion_cam_body"/>
+    <origin rpy="0 0.05 0" xyz="0 0 0.1"/>
+  </joint>
+  <joint name="gaze_joint" type="fixed">
+    <parent link="Xtion_cam_body"/>
+    <child link="gaze"/>
+    <origin rpy="0 0 0" xyz="0.015 0 0.022"/>
+  </joint>
   <!-- ************ COMAN BASE ************** -->
   <!-- 
   ROS urdf definition of the COMAN humanoid robot by Istituto Italiano di Tecnologia
@@ -961,11 +1011,11 @@ and to define the end effectors of the robot -->
   <!-- JOINTS -->
 
   <!-- Head -->
-  <joint name="gaze_joint" type="fixed">
+  <!-- <joint name="gaze_joint" type="fixed">
     <parent link="torso"/>
     <child link="gaze"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
-  </joint>
+  </joint> -->
   <!-- End Head -->
   <!-- Waist -->
   <joint name="base_joint" type="fixed">
@@ -1810,6 +1860,51 @@ and to define the end effectors of the robot -->
     <implicitSpringDamper>1</implicitSpringDamper>
     <provideFeedback>true</provideFeedback>
   </gazebo>
+
+    <gazebo reference="gaze">
+    <sensor name="openni_camera_camera" type="depth">
+      <always_on>1</always_on>
+      <visualize>1</visualize>
+      <camera name="__default__">
+        <horizontal_fov>1.047</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <depth_camera>
+          <output>depths</output>
+        </depth_camera>
+        <clip>
+          <near>0.1</near>
+          <far>100</far>
+        </clip>
+      </camera>
+      <plugin filename="libgazebo_ros_openni_kinect.so" name="camera_controller">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>10.0</updateRate>
+        <cameraName>camera</cameraName>
+        <frameName>camera_link</frameName>
+        <imageTopicName>rgb/image_raw</imageTopicName>
+        <depthImageTopicName>depth/image_raw</depthImageTopicName>
+        <pointCloudTopicName>depth/points</pointCloudTopicName>
+        <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+        <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+        <pointCloudCutoff>0.4</pointCloudCutoff>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+        <CxPrime>0.0</CxPrime>
+        <Cx>0.0</Cx>
+        <Cy>0.0</Cy>
+        <focalLength>0.0</focalLength>
+      </plugin>
+    </sensor>
+  </gazebo>
+
   <!-- YARP PLUGINS for GAZEBO SIMULATION -->
   <gazebo reference="RForearmPlate">
     <sensor name="right_arm" type="force_torque">
@@ -2248,7 +2343,6 @@ and to define the end effectors of the robot -->
       </material>
     </visual>
   </gazebo>
-
   <!-- <origin rpy="0 0 0" xyz="0.0 0.0 0.521"/> -->
 </robot>
 
