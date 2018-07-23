@@ -131,7 +131,7 @@ void Control::LowerBody( double tm, double *Q0, double *qSens, double *qSensAbs,
 {
     StackAsVector(tmVec, tm, M);
     
-    // DTm = 0.001;
+    DTm = 0.001;
 
     // Which Coman
     walkingController3.whichComan_ = whichComan_;
@@ -140,11 +140,11 @@ void Control::LowerBody( double tm, double *Q0, double *qSens, double *qSensAbs,
     
     double testOrientation[3];
     R2Euler(trans, testOrientation);
-    thr = testOrientation[2]; // 0
+    thr = testOrientation[0]; // 0
     thp = testOrientation[1]; // 1
-    double thy = testOrientation[0];
+    double thy = testOrientation[2];
 
-    std::cout << " - thp : " << thp << " : - thr : " << thr << " : - thy : " << thy << std::endl;
+    std::cout << "thr : " << thr << " : thp : " << thp << " : thy : " << thy << std::endl;
 
     // imuData.get_Orientation(trans, cdPR, imuOrientation);
     // imuData.get_AngRates(imuAngRates, cdPR, angRates);
