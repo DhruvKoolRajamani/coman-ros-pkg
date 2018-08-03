@@ -20,14 +20,14 @@ void init_pos(double _tm, double Pos_sens0[], double Qfinal[], double Pos_sens[]
     
     for ( int i = 0; i < 23; i++ )
     {
-        Kp[i] = 300;
-        Kd[i] = 2;
+        Kp[i] = 150;
+        Kd[i] = 0.1;
     }
 
     for ( int i = 23; i < N; i++ )
     {
         Kp[i] = 2;
-        Kd[i] = 0.1;
+        Kd[i] = 0.01;
     }
 
     // for ( int i = 0; i< N; i++ )
