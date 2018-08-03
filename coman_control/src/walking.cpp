@@ -140,15 +140,13 @@ int main(int argc, char **argv)
         //      (Q_imu.z*Q_imu.z) + (Q_imu.w*Q_imu.w) << " : Vel : " 
         //      << V_imu.x << endl;
 
-        toEulerAngle( Q_imu, &thr, &thp, &thy );
+        CalcRots( Q_imu, Trans, &thr, &thp, &thy );
 
         euler[0] = thr; // pitch
         euler[1] = thp; // yaw
         euler[2] = thy; // roll
 
         cout << "\nthr : " << euler[0] << " : thp : " << euler[1] << " : thy : " << euler[2] << endl;
-
-        toTrans( euler, Trans );
 
         ImuAngRates[0] = V_imu.x;
         ImuAngRates[1] = V_imu.y;

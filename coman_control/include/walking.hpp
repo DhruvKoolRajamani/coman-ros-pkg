@@ -75,7 +75,7 @@ void calcQuaternion( const geometry_msgs::Quaternion q, geometry_msgs::Quaternio
     outQ->w = q.w/norm;
 }
 
-static void toEulerAngle(const geometry_msgs::Quaternion q, double *roll, double *pitch, double *yaw )
+static void toEulerAngle( const geometry_msgs::Quaternion q, double *roll, double *pitch, double *yaw )
 {
 	// roll (x-axis rotation)
 	double sinr = +2.0 * (q.w * q.x + q.y * q.z);
@@ -118,6 +118,52 @@ void toTrans(double E_imu[3], double Trans[3][3])
     Trans[1][2] = c3*s1 + c1*s2*s3;
     Trans[2][0] = s2;
     Trans[2][1] = -c2*s1;
+    Trans[2][2] = c1*c2;
+}
+
+void CalcRots( const geometry_msgs::Quaternion q, double Trans[][3], double *roll, double *pitch, double *yaw )
+{
+    double tempTrans[3][3];
+
+    double q02 = q.w*q.w;
+    double q12 = q.x*q.x;
+    double q22 = q.y*q.y;
+    double q32 = q.z*q.z;
+
+    double q0 = q.w;
+    double q1 = q.x;
+    double q2 = q.y;
+    double q3 = q.z;
+
+    tempTrans[0][0] = 2*( q02 + q12 - 1/2 );
+    tempTrans[0][1] = 2*( q1*q2 + q0*q3 );
+    tempTrans[0][2] = 2*( q1*q3 - q0*q2 );
+    tempTrans[1][0] = 2*( q1*q2 - q0*q3 );
+    tempTrans[1][1] = 2*( q02 + q22 - 1/2 );
+    tempTrans[1][2] = 2*( q2*q3 + q0*q1 );
+    tempTrans[2][0] = 2*( q1*q3 + q0*q2 );
+    tempTrans[2][1] = 2*( q2*q3 - q0*q1 );
+    tempTrans[2][2] = 2*( q02 + q32 - 1/2 );
+
+    *roll = asin( -tempTrans[0][2] );
+    *pitch = asin( tempTrans[1][2]/tempTrans[2][2] );
+    *yaw = atan2( tempTrans[0][1], tempTrans[0][0] );
+
+    double c1 = cos(*roll); // 1
+    double c2 = cos(*pitch); // 2
+    double c3 = cos(*yaw); // 3
+    double s1 = sin(*roll);
+    double s2 = sin(*pitch);            
+    double s3 = sin(*yaw);
+
+    Trans[0][0] = c2*c3;
+    Trans[0][1] = -c1*s3 + c3*s1*s2;
+    Trans[0][2] = s1*s3 + c1*c3*s2;
+    Trans[1][0] = c2*s3;
+    Trans[1][1] = c1*c3 + s1*s2*s3;
+    Trans[1][2] = -c3*s1 + c1*s2*s3;
+    Trans[2][0] = -s2;
+    Trans[2][1] = c2*s1;
     Trans[2][2] = c1*c2;
 }
 

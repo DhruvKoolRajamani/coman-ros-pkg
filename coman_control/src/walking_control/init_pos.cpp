@@ -20,8 +20,8 @@ void init_pos(double _tm, double Pos_sens0[], double Qfinal[], double Pos_sens[]
     
     for ( int i = 0; i < 23; i++ )
     {
-        Kp[i] = 150;
-        Kd[i] = 0.1;
+        Kp[i] = 170;
+        Kd[i] = 0.5;
     }
 
     for ( int i = 23; i < N; i++ )
